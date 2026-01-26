@@ -19,3 +19,13 @@ using transactional financial data.
 - Revenue is highly concentrated in top customers
 - Certain months show strong seasonality
 - Customer purchase gaps shrink over time for loyal users
+
+## Dataset
+This project uses a large public Kaggle dataset related to financial transactions and fraud detection.
+
+Due to size and licensing constraints, the raw dataset is not included in this repository.
+
+You can download the dataset here:
+https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
+
+See `/data/dataset_description.md` for full schema and details.
