@@ -1,8 +1,7 @@
 # Finance EDA – Revenue & Customer Analysis
 
 ## Objective
-Explore revenue trends, customer behavior, and product performance 
-using transactional financial data.
+This project explores financial transaction behavior and fraud patterns to assess revenue stability, customer concentration risk, and transaction trends over time.
 
 ## Tools Used
 - MySQL (CTEs, Window Functions, Date Functions)
