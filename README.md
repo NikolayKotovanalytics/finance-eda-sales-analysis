@@ -40,7 +40,7 @@ See `/data/dataset_description.md` for full schema and details.
 - 2000 registered customers
 - 1219 active customers with transactions
 - No NULL values detected
-- Total net transaction value: ~$571M
-- Refunds present as negative transaction amounts
+- Total transaction value: ~$571M
+- Gross income and Refunds calculated
 
 ===============================================================================================================================================================================
