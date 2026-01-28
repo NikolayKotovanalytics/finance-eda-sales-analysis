@@ -28,3 +28,19 @@ You can download the dataset here:
 https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
 
 See `/data/dataset_description.md` for full schema and details.
+===============================================================================================================================================================================
+
+## Phase 1 – Data Understanding
+
+**Dataset:** Kaggle – Transactions Fraud Dataset  
+**Period:** 2010–2019  
+**Entities:** Customers, Cards, Transactions  
+
+### Key Findings
+- 2000 registered customers
+- 1219 active customers with transactions
+- No NULL values detected
+- Total net transaction value: ~$571M
+- Refunds present as negative transaction amounts
+
+===============================================================================================================================================================================
