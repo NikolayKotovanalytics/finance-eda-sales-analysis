@@ -15,9 +15,6 @@ This project explores financial transaction behavior and fraud patterns to asses
 - Are purchase frequencies increasing or decreasing?
 
 ## Key Insights
-- Revenue is highly concentrated in top customers
-- Certain months show strong seasonality
-- Customer purchase gaps shrink over time for loyal users
 
 ## Dataset
 This project uses a large public Kaggle dataset related to financial transactions and fraud detection.
