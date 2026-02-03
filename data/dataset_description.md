@@ -59,8 +59,3 @@ The dataset is used to:
 - Explore customer transaction frequency
 - Study fraud risk patterns
 
-## How to Reproduce
-1. Download the dataset from Kaggle
-2. Load CSV files into MySQL
-3. Run SQL scripts from the `/sql` directory
-
