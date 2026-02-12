@@ -3,34 +3,66 @@
 ## Objective
 This project explores financial transaction behavior and fraud patterns to assess revenue stability, customer concentration risk, and transaction trends over time.
 
-## Tools Used
-- MySQL (CTEs, Window Functions, Date Functions)
-- SQL for EDA
-- GitHub for version control
-
 ## Key Questions
 - How does revenue evolve over time?
 - Which customers contribute the most?
 - Is revenue concentrated or diversified?
 - Are purchase frequencies increasing or decreasing?
-
-## Key Insights
+- Are there any potential fraud indicators?
 
 ## Dataset
+
 This project uses a large public Kaggle dataset related to financial transactions and fraud detection.
 
 Due to size and licensing constraints, the raw dataset is not included in this repository.
+
+Dataset name:
+Kaggle – Transactions Fraud Dataset
 
 You can download the dataset here:
 https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
 
 See `/data/dataset_description.md` for full schema and details.
+
+## Tools & Technologies
+
+### Database & Querying
+- MySQL
+  - CTEs
+  - Window Functions
+  - Time-Series Analysis
+  - Revenue & Customer Segmentation Queries
+
+### Data Analysis
+- Python
+  - pandas
+  - SQLAlchemy
+
+### Data Visualization
+- Matplotlib
+- Seaborn
+
+### Development
+- Git
+- GitHub
+
+## Business Value
+
+This analysis demonstrates how transaction data can be used to:
+
+- Monitor revenue stability and seasonality
+- Detect revenue concentration risk
+- Identify high-value customer segments
+- Detect potential fraud patterns
+- Support marketing and retention strategies
+
+===============================================================================================================================================================================
 ===============================================================================================================================================================================
 
 ## Phase 1 – Data Understanding
 
 ## Objective
-Investigate the structure of the dataset, Check for missing data, find active customers, time range, total revenue, total refunds in a large financial transactions dataset.
+Investigate dataset structure, detect missing data, identify active customers, time coverage, total revenue, and refund volumes.
 
 **Dataset:** Kaggle – Transactions Fraud Dataset  
 **Period:** 2010–2019  
@@ -94,11 +126,8 @@ Measured average gross revenue per active customer per month to evaluate monetiz
 - Refund ratios remain relatively stable but spike during specific periods, warranting further investigation.
 
 ## Selected data was plotted as graphs
-The images illustrating clients' monthly refunds and monthly revenue trends
-are presented in `/data/images/Phase 2` .
-
-Their respective python code
-is stored in `/data/src`
+Visualizations: `/data/images/Phase_2`  
+Python plotting scripts: `/data/src`
 
 ===============================================================================================================================================================================
 
@@ -155,10 +184,11 @@ Selected cards which were used by multiple different clients (suspicious activit
 - Potential fraud investigation. Labelling customers together with filtering them by unusually high refun ratio can indicate on potential fraud. Another fraud indicator could be cards used by multiple clients. 
 
 ===============================================================================================================================================================================
+===============================================================================================================================================================================
 
-## EDA Cocnclusions:
+## EDA Conclusions
 
-Database was investigated for its contents and missing values. 
-Various metrics were used to analise revenue and client base.
-Refunds, Client Reactivation Spike and Card useage were analysed to find potential fraudulent activity.
+The database was investigated for structure, completeness, and missing values.  
+Multiple analytical metrics were applied to analyze revenue trends and customer behavior.  
+Refund patterns, customer reactivation spikes, and card usage were analyzed to identify potential fraud indicators.
 
