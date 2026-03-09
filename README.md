@@ -46,6 +46,19 @@ See `/data/dataset_description.md` for full schema and details.
 - Git
 - GitHub
 
+### Acknowledgements / AI Assistance
+This project was developed with the assistance of AI tools.
+
+ChatGPT (OpenAI) 5.3 was used for:
+
+- code debugging and optimization suggestions
+- reviewing Python and SQL queries
+- improving data visualization implementation
+- proofreading and refining sections of the project documentation (README)
+
+All analysis design, interpretation of results, and final implementation decisions were performed by the author.
+AI assistance was used strictly as a development aid, similar to consulting documentation or technical forums.
+
 ## Business Value
 
 This analysis demonstrates how transaction data can be used to:
