@@ -81,7 +81,7 @@ Investigate dataset structure, detect missing data, identify active customers, t
 **Period:** 2010–2019  
 **Entities:** Customers, Cards, Transactions  
 
-### Key Findings
+### Key insights
 - 2000 registered customers
 - 1219 active customers with transactions
 - No NULL values detected
