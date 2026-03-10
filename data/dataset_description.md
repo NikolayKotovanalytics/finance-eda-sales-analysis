@@ -30,7 +30,7 @@ This dataset contains financial transaction records including:
 
 The dataset simulates real-world financial transaction behavior and fraud patterns.
 
-## Key Tables (Logical Model)
+## Table Schema
 
 ### users_data
 - user_id
