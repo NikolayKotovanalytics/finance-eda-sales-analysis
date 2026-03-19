@@ -35,12 +35,13 @@ See `/data/dataset_description.md` for full schema and details.
 
 ### Data Analysis
 - Python
-  - pandas
-  - SQLAlchemy
+- pandas
+- SQLAlchemy
 
 ### Data Visualization
 - Matplotlib
 - Seaborn
+- Power BI
 
 ### Development
 - Git
@@ -194,7 +195,37 @@ Selected cards which were used by multiple different clients (suspicious activit
 - Identification of target audience. Most valuable (profitable) customers were identified and their share was calculated. 
 - Clients' purchase behaviour like purchase frequency, and average time between purchases was analysed. This has potential to be used for future advertisement campains.
 - Clients were labelled and grouped based on their total orders, revenue, and order frequency. This provides an overview across the active clients pool.
-- Potential fraud investigation. Labelling customers together with filtering them by unusually high refun ratio can indicate on potential fraud. Another fraud indicator could be cards used by multiple clients. 
+- Potential fraud investigation. Labelling customers together with filtering them by unusually high refun ratio can indicate on potential fraud. Another fraud indicator could be cards used by multiple clients.
+
+===============================================================================================================================================================================
+
+## Dashboard & Data Visualization
+
+An interactive Power BI dashboard was developed to present key financial metrics,
+revenue trends, and customer behavior insights derived from the EDA.
+
+This dashboard demonstrates how analytical outputs can be translated into
+decision-support tools for business stakeholders.
+
+### Key Features
+
+- Revenue and refund trends over time
+- Customer activity and transaction patterns
+- Financial behavior segmentation
+- Comparison across transaction types and payment methods
+
+### Preview
+
+A static preview is available in:
+`/data/dashboards/screenshots/ftb_Revenue_and_Returns_dashboard.png`
+
+### File
+
+The full interactive Power BI (.pbix) file can be downloaded here:
+
+https://drive.google.com/file/d/1wL0z1XCwDGNyfbKGTKyleXwxc9j4jrvc/view?usp=drive_link
+
+*To explore the dashboard, download and open it in Power BI Desktop.*
 
 ===============================================================================================================================================================================
 ===============================================================================================================================================================================
