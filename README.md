@@ -28,10 +28,10 @@ See `/data/dataset_description.md` for full schema and details.
 
 ### Database & Querying
 - MySQL
-  - CTEs
-  - Window Functions
-  - Time-Series Analysis
-  - Revenue & Customer Segmentation Queries
+- CTEs
+- Window Functions
+- Time-Series Analysis
+- Revenue & Customer Segmentation Queries
 
 ### Data Analysis
 - Python
