@@ -76,18 +76,22 @@ This analysis demonstrates how transaction data can be used to:
 ## Phase 1 – Data Understanding
 
 ## Objective
-Investigate dataset structure, detect missing data, identify active customers, time coverage, total revenue, and refund volumes.
+Investigate dataset structure, detect missing data, identify active customers, time coverage, total revenue, refund volumes, and find data that may indicate fraud
 
 **Dataset:** Kaggle – Transactions Fraud Dataset  
-**Period:** 2010–2019  
-**Entities:** Customers, Cards, Transactions  
 
 ### Key insights
-- 2000 registered customers
-- 1219 active customers with transactions
-- No NULL values detected
-- Total transaction value: ~$571M
-- Gross income and Refunds calculated
+- Dataset is composed of 3 tables which contain data about transactions, bank cards and clients
+- No missing data found (NULL)
+- Dataset comprise 2000 unique clients who made ~13M transactions with unique 6146 bank cards
+- Out of 2000 clients listed, 1219 active clients, i.e. with at least one transaction. An Id list of non-active customers is shown
+- Out of 6146 bank cards, 2075 cards performed 0 transactions. An Id list of their clients is shown
+- Dataset covers a period from 2010/01/01 till 2019/10/31, i.e. 3590 days in total
+- Total transaction value: ~$571M which includes gross income $639M and -$67.5M refunds
+- Cards data contains information about cards presence on Darkweb. None cards were noted there
+- Data was checked for fraud indicators: No card numbers were used twice and 0 cards without a registered client were found
+
+SQL scripts: `/data/sql/phase1_understand_data.sql`
 
 ===============================================================================================================================================================================
 
