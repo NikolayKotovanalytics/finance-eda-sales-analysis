@@ -1,4 +1,3 @@
-
 -- SQL EDA Phase 1: Understand the data
 ---------------------------------------------------------------------------
 
@@ -121,11 +120,12 @@ WHERE t.client_id IS NULL;
 
 SELECT 
     MIN(date) as  first_date, -- 2010-01-01 00:01:00
-    MAX(date) as final_date -- 2019-10-31 23:59:00
+    MAX(date) as final_date, -- 2019-10-31 23:59:00
+    DATEDIFF(MAX(date), MIN(date)) AS total_days -- 3590 days
 FROM transactions_data t;
 
 
- -- Conclusion: Dataset covers total 10 years from start of 2010 till end of 2019.
+-- Conclusion: Dataset covers total 3590 days from January 1st 2010 till October 31st 2019
 
 
 -- TASK 5 Count Total Revenue from all transactions
@@ -172,7 +172,7 @@ FROM financial_transactions_dataset.clean_transactions;
 
 
 
--- SQL EDA Phase 1: Data safety checks
+-- SQL EDA Phase 1: Fraud related analysis 
 ---------------------------------------------------------------------------
 
 -- TASK 1 Check if any card is present on Darkweb 
