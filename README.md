@@ -78,7 +78,8 @@ This analysis demonstrates how transaction data can be used to:
 ## Objective
 Investigate dataset structure, detect missing data, identify active customers, time coverage, total revenue, refund volumes, and find data that may indicate fraud
 
-**Dataset:** Kaggle – Transactions Fraud Dataset  
+**Dataset:** Kaggle – Transactions Fraud Dataset
+**Entities:** Transactions, Users, Cards  
 
 ### Key insights
 - Dataset is composed of 3 tables which contain data about transactions, bank cards and clients
@@ -91,7 +92,7 @@ Investigate dataset structure, detect missing data, identify active customers, t
 - Cards data contains information about cards presence on Darkweb. None cards were noted there
 - Data was checked for fraud indicators: No card numbers were used twice and 0 cards without a registered client were found
 
-SQL scripts: `/data/sql/phase1_understand_data.sql`
+SQL scripts: `/data/sql/phase_1_understand_data.sql`
 
 ===============================================================================================================================================================================
 
@@ -101,8 +102,7 @@ SQL scripts: `/data/sql/phase1_understand_data.sql`
 Analyze revenue dynamics over time to identify trends, seasonality, volatility, customer activity patterns, and refund behavior in a large financial transactions dataset.
 
 **Dataset:** Kaggle – Transactions Fraud Dataset  
-**Period:** 2010–2019  
-**Entities:** Transactions  
+**Entities:** Transactions, Cards  
 
 Key Analyses Performed
 
@@ -115,8 +115,8 @@ Calculated absolute and percentage MoM revenue changes using window functions to
 3. Rolling 3-Month Revenue
 Applied rolling window aggregation to smooth short-term volatility and highlight underlying revenue trends.
 
-4. Yearly Revenue Growth
-Summarized total revenue by year to assess long-term business growth.
+4. Yearly Revenue and Refunds
+Summarized total revenue and total refund amounts by year to assess long-term business growth and operational risk.
 
 5. Seasonality Analysis
 Computed average monthly revenue across years and ranked months to detect recurring seasonal patterns.
@@ -124,24 +124,37 @@ Computed average monthly revenue across years and ranked months to detect recurr
 6. Transaction Volume vs Revenue
 Compared transaction counts with total revenue to derive average transaction value per month.
 
-7. Refund Trends Over Time
+7. Refund Trend Over Time
 Analyzed refund volumes and refund transaction ratios to assess operational risk and customer behavior.
 
 8. Revenue Volatility by Year
 Calculated standard deviation of monthly revenue per year to measure financial stability and risk exposure.
 
-9. Active Customers Over Time
-Tracked the number of unique active customers per month to understand customer engagement trends.
+9. Revenue per Active Customer / per Bank Card
+Measured average gross revenue per active customer and per card per month to evaluate monetization efficiency.
 
-10. Revenue per Active Customer
-Measured average gross revenue per active customer per month to evaluate monetization efficiency.
+10. RFM Segmentation with Refund Behavior (Value vs Risk Analysis)
+Combined Recency, Frequency, and Monetary (RFM) metrics with refund behavior to classify clients into revenue and refund segments.
+
+- Revenue segments were ranked hierarchically: Champion > Loyal > Big spenders > At Risk > New > Inactive
+- Refund behavior was classified by monetary and frequency-based ratios into No refunds, Normal behavior, Occasional large refunds, High-risk customer, Potential Abuse
+- Final segmentation allows identifying high-value clients, at-risk customers, and potential refund abuse cases.
+
+11. Data Safety Checks – Card Expiration Validation
+Verified whether any transactions occurred after the respective bank card had expired.
+
+- Identified client IDs, card IDs, and transaction dates where the transaction occurred after card expiration.
+- Helps detect potential operational errors or fraudulent activity.
 
 ### Key Insights
 
 - Revenue exhibits long-term growth with pronounced seasonal variations.
 - Certain years show increased revenue volatility, indicating higher financial risk.
-- Active customer counts fluctuate independently from revenue, highlighting changes in spending behavior.
 - Refund ratios remain relatively stable but spike during specific periods, warranting further investigation.
+- Hierarchical RFM segmentation allows prioritizing marketing efforts and detecting potential refund abuse while maintaining a value vs risk perspective.
+- Card expiration checks revealed transactions post-expiration, highlighting operational or security issues that require attention.
+
+SQL scripts: `/data/sql/phase_2_time_based_analysis`
 
 ## Selected data was plotted as graphs
 Visualizations: `/data/images/Phase_2`  
