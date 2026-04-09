@@ -1,11 +1,10 @@
-import pandas as pd                    
-from sqlalchemy import create_engine
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Connect to SQL, use MySQL code and Retrieve Results in Pandas DataFrame
-engine = create_engine(
-    "mysql+pymysql://root:admin@localhost:3306/financial_transactions_dataset" )
+from db import get_db_engine
+
+engine = get_db_engine()
 
 # SQL Query to claculate monthly refunds and refund ratio percentage, as well as count of active customers per month
 query_refunds = """
