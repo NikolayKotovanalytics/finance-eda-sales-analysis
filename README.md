@@ -31,7 +31,7 @@ MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 
 ## Repository Structure
 
-``text
+```text
 finance-eda-sales-analysis/
 ├── README.md
 ├── requirements.txt
@@ -52,14 +52,14 @@ finance-eda-sales-analysis/
 
 ### 1. Clone the repository
 
-``bash
+```bash
 git clone https://github.com/NikolayKotovanalytics/finance-eda-sales-analysis.git
 cd finance-eda-sales-analysis
 
 
 ### 2. Create and activate a virtual environment
 
-``bash
+```bash
 python -m venv venv
 
 ### 3. Install project dependencies
