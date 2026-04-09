@@ -56,7 +56,7 @@ WHERE dist_rank <= 0.10; -- Filters top 10% customers by revenue
 -- Result: Revenue Share of Top 10% Customers is 23.86% of total revenue
 
 
--- Task 3 – Customer Monthly Purchase Frequency 
+-- Task 3 – Customer Purchase Frequency Segmentation 
 
 WITH customer_lifetime AS -- CTE: preliminary calcuations per client
     (SELECT
@@ -144,7 +144,7 @@ GROUP BY client_id
 ORDER BY client_id;
 
 
--- TASK 5  Label Customers by their total number of orders
+-- TASK 5  Customer Segmentation by Total Orders
 
 WITH clean_data AS  -- CTE: Calculate total number of orders per customer excluding refunds
     (SELECT 
