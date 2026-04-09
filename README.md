@@ -54,24 +54,31 @@ finance-eda-sales-analysis/
 git clone https://github.com/NikolayKotovanalytics/finance-eda-sales-analysis.git
 cd finance-eda-sales-analysis
 ```
+
 ### 2. Create and activate a virtual environment
 ```bash python -m venv venv```
+
 ### 3. Install project dependencies
 pip install -r requirements.txt
+
 ### 4. Download the dataset
 
 This project uses the public Transactions Fraud Dataset from Kaggle.
 
 Download it from Kaggle at:
+
 https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
 
 Raw data is not included in this repository due to size and licensing constraints.
 
 ### 5. Create the MySQL database and import data from the Kaggle dataset
+
 CREATE DATABASE financial_transactions_dataset;
+
 Then import the dataset tables into that database.
 
 ### 6. Configure database credentials
+
 Create a .env file in the project root:
 
 DB_HOST=localhost
@@ -81,7 +88,9 @@ DB_USER=your_username
 DB_PASSWORD=your_password
 
 ### 7. Run scripts and Review outputs
+
 - SQL analysis scripts: data/sql/
+
 Recommended order:
 
 phase_1_understand_data.sql
@@ -111,15 +120,7 @@ Main entities analyzed include:
 See `/data/dataset_description.md` for full schema and details.
 
 ### Acknowledgements / AI Assistance
-This project was developed with the assistance of AI tools.
-
-ChatGPT (OpenAI) 5.3 was used for:
-
-- code debugging and optimization suggestions
-- reviewing Python and SQL queries
-- improving data visualization implementation
-- proofreading and refining sections of the project documentation (README)
-
+This project was developed with the assistance of AI tools - ChatGPT (OpenAI).
 All analysis design, interpretation of results, and final implementation decisions were performed by the author.
 AI assistance was used strictly as a development aid, similar to consulting documentation or technical forums.
 
