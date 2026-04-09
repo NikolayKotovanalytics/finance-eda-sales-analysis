@@ -41,7 +41,7 @@ finance-eda-sales-analysis/
 │   ├── src/
 │   ├── images/
 │   └── dashboards/
-
+```
 ### Folder Details
 - `data/sql/` – SQL scripts used for transformations and analysis
 - `data/src/` – Python scripts for database extraction and plotting
@@ -55,17 +55,17 @@ finance-eda-sales-analysis/
 ```bash
 git clone https://github.com/NikolayKotovanalytics/finance-eda-sales-analysis.git
 cd finance-eda-sales-analysis
-
+```
 
 ### 2. Create and activate a virtual environment
 
 ```bash
 python -m venv venv
-
+```
 ### 3. Install project dependencies
-
+```
 pip install -r requirements.txt
-
+```
 ### 4. Download the dataset
 
 This project uses the public Transactions Fraud Dataset from Kaggle.
@@ -77,21 +77,21 @@ https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
 Raw data is not included in this repository due to size and licensing constraints.
 
 ### 5. Create the MySQL database and import the dataset tables
-
+```
 CREATE DATABASE financial_transactions_dataset;
-
+```
 Then import the dataset tables into that database.
 
 ### 6. Configure database credentials
 
 Create a .env file in the project root:
-
+```
 DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=financial_transactions_dataset
 DB_USER=your_username
 DB_PASSWORD=your_password
-
+```
 ### 7. Run scripts and Review outputs
 
 - SQL analysis scripts: `data/sql/`
