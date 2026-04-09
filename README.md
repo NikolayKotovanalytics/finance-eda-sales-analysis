@@ -30,8 +30,7 @@ MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 - Dashboard screenshots / Power BI reporting
 
 ## Repository Structure
-
-```text
+```
 finance-eda-sales-analysis/
 ├── README.md
 ├── requirements.txt
@@ -42,11 +41,12 @@ finance-eda-sales-analysis/
 │   ├── images/
 │   └── dashboards/
 ```
+
 ### Folder Details
-- `data/sql/` – SQL scripts used for transformations and analysis
-- `data/src/` – Python scripts for database extraction and plotting
-- `data/images/` – exported charts used in the README and reporting
-- `data/dashboards/` – Power BI dashboard screenshots or files
+- `data/sql/` - SQL scripts used for transformations and analysis
+- `data/src/` - Python scripts for database extraction and plotting
+- `data/images/` - exported charts used in the README and reporting
+- `data/dashboards/` - Power BI dashboard screenshots or files
 
 ## How to Run This Project
 
@@ -59,13 +59,19 @@ cd finance-eda-sales-analysis
 
 ### 2. Create and activate a virtual environment
 
+**Windows**
 ```bash
 python -m venv venv
 ```
-### 3. Install project dependencies
+```bash
+venv\Scripts\activate
 ```
+
+### 3. Install project dependencies
+```bash
 pip install -r requirements.txt
 ```
+
 ### 4. Download the dataset
 
 This project uses the public Transactions Fraud Dataset from Kaggle.
@@ -77,37 +83,38 @@ https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
 Raw data is not included in this repository due to size and licensing constraints.
 
 ### 5. Create the MySQL database and import the dataset tables
-```
+```sql
 CREATE DATABASE financial_transactions_dataset;
 ```
 Then import the dataset tables into that database.
 
 ### 6. Configure database credentials
 
-Create a .env file in the project root:
-```
+Create a `.env` file in the project root:
+```env
 DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=financial_transactions_dataset
 DB_USER=your_username
 DB_PASSWORD=your_password
 ```
-### 7. Run scripts and Review outputs
+
+### 7. Run scripts and review outputs
 
 - SQL analysis scripts: `data/sql/`
 
 Recommended order:
-`phase_1_understand_data.sql`
-`phase_2_time_based_analysis.sql`
-`phase_3_customer_behavior_and_revenue_structure.sql`
+1. `phase_1_understand_data.sql`
+2. `phase_2_time_based_analysis.sql`
+3. `phase_3_customer_behavior_and_revenue_structure.sql`
  
 - Python scripts: `data/src/`
 
 After the database is set up, run the Python scripts in data/src/ to generate charts:
-
+```bash
 python data/src/phase2_monthly_revenue.py
 python data/src/phase2_refunds_active_customers.py
-
+```
 - Visualizations: `data/images/`
 - Dashboard screenshots: `data/dashboards/`
 
