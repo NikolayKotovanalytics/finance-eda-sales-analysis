@@ -80,8 +80,7 @@ DB_NAME=financial_transactions_dataset
 DB_USER=your_username
 DB_PASSWORD=your_password
 
-### 7. Run the SQL analysis scripts
-### 9. Run scripts and Review outputs
+### 7. Run scripts and Review outputs
 - SQL analysis scripts: data/sql/
 Recommended order:
 
