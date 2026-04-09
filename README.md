@@ -26,11 +26,6 @@ MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 
 ## Project Deliverables
 - SQL analysis scripts
-- Python visualizations
-- Dashboard screenshots / Power BI reporting
-
-## Project Deliverables
-- SQL analysis scripts
 - Python visualizations scripts and screenshots
 - Dashboard screenshots / Power BI reporting
 
@@ -51,7 +46,6 @@ finance-eda-sales-analysis/
 - `data/src/` – Python scripts for database extraction and plotting
 - `data/images/` – exported charts used in the README and reporting
 - `data/dashboards/` – Power BI dashboard screenshots or files
-- `outputs/` – final generated analysis outputs
 
 ## How to Run This Project
 
@@ -60,14 +54,52 @@ finance-eda-sales-analysis/
 git clone https://github.com/NikolayKotovanalytics/finance-eda-sales-analysis.git
 cd finance-eda-sales-analysis
 ```
-This section TO BE updated...
+### 2. Create and activate a virtual environment
+```bash python -m venv venv```
+### 3. Install project dependencies
+pip install -r requirements.txt
+### 4. Download the dataset
+
+This project uses the public Transactions Fraud Dataset from Kaggle.
+
+Download it from Kaggle at:
+https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
+
+Raw data is not included in this repository due to size and licensing constraints.
+
+### 5. Create the MySQL database and import data from the Kaggle dataset
+CREATE DATABASE financial_transactions_dataset;
+Then import the dataset tables into that database.
+
+### 6. Configure database credentials
+Create a .env file in the project root:
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=financial_transactions_dataset
+DB_USER=your_username
+DB_PASSWORD=your_password
+
+### 7. Run the SQL analysis scripts
+### 9. Run scripts and Review outputs
+- SQL analysis scripts: data/sql/
+Recommended order:
+
+phase_1_understand_data.sql
+phase_2_time_based_analysis.sql
+phase_3_customer_behavior_and_revenue_structure.sql
+ 
+- Python scripts: data/src/
+After the database is set up, run the Python scripts in data/src/ to generate charts:
+
+python data/src/phase2_monthly_revenue.py
+python data/src/phase2_refunds_active_customers.py
+
+- Visualizations: data/images/
+- Dashboard screenshots: data/dashboards/
 
 ## Dataset Overview
-The project uses a large transaction-level dataset containing customer, payment, refund, and time-related sales information.
-
-The dataset is a large public Kaggle dataset related to financial transactions and fraud detection.
-The dataset contains approximately 13 million transaction records and supports time-based, customer-level, and payment-related analysis.
-Due to size and licensing constraints, the raw dataset is not included in this repository.
+The project uses a large transaction-level dataset containing approximately 13 million transaction records and supports time-based, customer-level, and payment-related analysis.
 
 Main entities analyzed include:
 - Transactions
@@ -76,12 +108,6 @@ Main entities analyzed include:
 - Refund events
 - Card/payment attributes
 - Time dimensions
-
-Dataset name:
-Kaggle – Transactions Fraud Dataset
-
-You can download the dataset here:
-https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
 
 See `/data/dataset_description.md` for full schema and details.
 
