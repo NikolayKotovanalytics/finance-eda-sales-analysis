@@ -5,7 +5,7 @@ This project analyzes large-scale finance and sales transaction data to identify
 
 The analysis combines:
 - MySQL for data cleaning, transformation, and business analysis
-- Python (pandas, matplotlib/seaborn) for EDA and visualizations
+- Python (pandas, matplotlib, seaborn) for EDA and visualizations
 - Power BI for dashboarding and stakeholder reporting
 
 ## Business Questions
@@ -26,12 +26,13 @@ MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 
 ## Project Deliverables
 - SQL analysis scripts
-- Python visualizations scripts and screenshots
+- Python visualization scripts and exported charts
 - Dashboard screenshots / Power BI reporting
 
 ## Repository Structure
+
+``text
 finance-eda-sales-analysis/
-│
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
@@ -50,15 +51,19 @@ finance-eda-sales-analysis/
 ## How to Run This Project
 
 ### 1. Clone the repository
-```bash
+
+``bash
 git clone https://github.com/NikolayKotovanalytics/finance-eda-sales-analysis.git
 cd finance-eda-sales-analysis
-```
+
 
 ### 2. Create and activate a virtual environment
-```bash python -m venv venv```
+
+``bash
+python -m venv venv
 
 ### 3. Install project dependencies
+
 pip install -r requirements.txt
 
 ### 4. Download the dataset
@@ -71,7 +76,7 @@ https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
 
 Raw data is not included in this repository due to size and licensing constraints.
 
-### 5. Create the MySQL database and import data from the Kaggle dataset
+### 5. Create the MySQL database and import the dataset tables
 
 CREATE DATABASE financial_transactions_dataset;
 
@@ -89,22 +94,22 @@ DB_PASSWORD=your_password
 
 ### 7. Run scripts and Review outputs
 
-- SQL analysis scripts: data/sql/
+- SQL analysis scripts: `data/sql/`
 
 Recommended order:
-
-phase_1_understand_data.sql
-phase_2_time_based_analysis.sql
-phase_3_customer_behavior_and_revenue_structure.sql
+`phase_1_understand_data.sql`
+`phase_2_time_based_analysis.sql`
+`phase_3_customer_behavior_and_revenue_structure.sql`
  
-- Python scripts: data/src/
+- Python scripts: `data/src/`
+
 After the database is set up, run the Python scripts in data/src/ to generate charts:
 
 python data/src/phase2_monthly_revenue.py
 python data/src/phase2_refunds_active_customers.py
 
-- Visualizations: data/images/
-- Dashboard screenshots: data/dashboards/
+- Visualizations: `data/images/`
+- Dashboard screenshots: `data/dashboards/`
 
 ## Dataset Overview
 The project uses a large transaction-level dataset containing approximately 13 million transaction records and supports time-based, customer-level, and payment-related analysis.
@@ -119,10 +124,10 @@ Main entities analyzed include:
 
 See `/data/dataset_description.md` for full schema and details.
 
-### Acknowledgements / AI Assistance
-This project was developed with the assistance of AI tools - ChatGPT (OpenAI).
-All analysis design, interpretation of results, and final implementation decisions were performed by the author.
-AI assistance was used strictly as a development aid, similar to consulting documentation or technical forums.
+## Acknowledgements / AI Assistance
+This project was developed with the assistance of AI tools: ChatGPT (OpenAI).
+
+AI was used for code review, debugging, and documentation refinement. All analysis design, interpretation of results, and final implementation decisions were performed by the author.
 
 ## Business Value
 
