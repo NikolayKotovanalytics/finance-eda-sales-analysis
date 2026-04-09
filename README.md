@@ -1,20 +1,82 @@
-# Finance EDA – Revenue & Customer Analysis
+# Finance EDA Sales Analysis
 
-## Objective
-This project explores financial transaction behavior and fraud patterns to assess revenue stability, customer concentration risk, and transaction trends over time.
+## Project Summary
+This project analyzes large-scale finance and sales transaction data to identify revenue trends, customer behavior patterns, refund activity, and potential payment anomalies.
 
-## Key Questions
-- How does revenue evolve over time?
-- Which customers contribute the most?
-- Is revenue concentrated or diversified?
-- Are purchase frequencies increasing or decreasing?
-- Are there any potential fraud indicators?
+The analysis combines:
+- MySQL for data cleaning, transformation, and business analysis
+- Python (pandas, matplotlib/seaborn) for EDA and visualizations
+- Power BI for dashboarding and stakeholder reporting
 
-## Dataset
+## Business Questions
+- How does revenue change over time?
+- Are there seasonal or monthly patterns in sales?
+- Which customers contribute most of the revenue?
+- How do refunds relate to active customer trends?
+- Are there suspicious transactions, such as payments after card expiration?
 
-This project uses a large public Kaggle dataset related to financial transactions and fraud detection.
+## Key Findings
+- Revenue shows clear time-based variation and seasonal patterns
+- A small group of customers contributes a disproportionately high share of revenue
+- Refund spikes appear in specific periods and deserve operational review
+- Transactions after card expiration suggest possible control or data-quality issues
 
+## Tools Used
+MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
+
+## Project Deliverables
+- SQL analysis scripts
+- Python visualizations
+- Dashboard screenshots / Power BI reporting
+
+## Project Deliverables
+- SQL analysis scripts
+- Python visualizations scripts and screenshots
+- Dashboard screenshots / Power BI reporting
+
+## Repository Structure
+finance-eda-sales-analysis/
+│
+├── README.md
+├── requirements.txt
+├── .gitignore
+├── data/
+│   ├── sql/
+│   ├── src/
+│   ├── images/
+│   └── dashboards/
+└── outputs/
+
+### Folder Details
+- `data/sql/` – SQL scripts used for transformations and analysis
+- `data/src/` – Python scripts for database extraction and plotting
+- `data/images/` – exported charts used in the README and reporting
+- `data/dashboards/` – Power BI dashboard screenshots or files
+- `outputs/` – final generated analysis outputs
+
+## How to Run This Project
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/NikolayKotovanalytics/finance-eda-sales-analysis.git
+cd finance-eda-sales-analysis
+```
+This section TO BE updated...
+
+## Dataset Overview
+The project uses a large transaction-level dataset containing customer, payment, refund, and time-related sales information.
+
+The dataset is a large public Kaggle dataset related to financial transactions and fraud detection.
+The dataset contains approximately 13 million transaction records and supports time-based, customer-level, and payment-related analysis.
 Due to size and licensing constraints, the raw dataset is not included in this repository.
+
+Main entities analyzed include:
+- Transactions
+- Customers
+- Revenue amounts
+- Refund events
+- Card/payment attributes
+- Time dimensions
 
 Dataset name:
 Kaggle – Transactions Fraud Dataset
@@ -23,29 +85,6 @@ You can download the dataset here:
 https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
 
 See `/data/dataset_description.md` for full schema and details.
-
-## Tools & Technologies
-
-### Database & Querying
-- MySQL
-- CTEs
-- Window Functions
-- Time-Series Analysis
-- Revenue & Customer Segmentation Queries
-
-### Data Analysis
-- Python
-- pandas
-- SQLAlchemy
-
-### Data Visualization
-- Matplotlib
-- Seaborn
-- Power BI
-
-### Development
-- Git
-- GitHub
 
 ### Acknowledgements / AI Assistance
 This project was developed with the assistance of AI tools.
@@ -154,10 +193,10 @@ Verified whether any transactions occurred after the respective bank card had ex
 - Hierarchical RFM segmentation allows prioritizing marketing efforts and detecting potential refund abuse while maintaining a value vs risk perspective.
 - Card expiration checks revealed transactions post-expiration, highlighting operational or security issues that require attention.
 
-SQL scripts: `/data/sql/phase_2_time_based_analysis`
+SQL scripts: `/data/sql/phase_2_time_based_analysis.sql`
 
 ## Selected data was plotted as graphs
-Visualizations: `/data/images/Phase_2`  
+Visualizations: `/data/images/`  
 Python plotting scripts: `/data/src`
 
 ===============================================================================================================================================================================
@@ -228,7 +267,7 @@ Identified cards used by multiple clients as a potential fraud indicator.
   2. abnormal reactivation spikes
   3. shared card usage
 
-SQL scripts: `/data/sql/phase_3_phase_3_customer_behavior_and_revenue_structure.sql`
+SQL scripts: `/data/sql/phase_3_customer_behavior_and_revenue_structure.sql`
 
 ===============================================================================================================================================================================
 
@@ -263,6 +302,12 @@ https://drive.google.com/file/d/1wL0z1XCwDGNyfbKGTKyleXwxc9j4jrvc/view?usp=drive
 ===============================================================================================================================================================================
 ===============================================================================================================================================================================
 
+## Business Recommendations
+- Monitor revenue seasonality to improve planning and campaign timing
+- Investigate refund spikes by product, region, or operational process
+- Build retention strategies for high-value customers
+- Review payment validation rules for transactions involving expired cards
+- 
 ## EDA Conclusions
 
 The database was investigated for structure, completeness, and missing values.  
