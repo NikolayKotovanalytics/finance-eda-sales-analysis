@@ -45,7 +45,6 @@ finance-eda-sales-analysis/
 │   ├── src/
 │   ├── images/
 │   └── dashboards/
-└── outputs/
 
 ### Folder Details
 - `data/sql/` – SQL scripts used for transformations and analysis
