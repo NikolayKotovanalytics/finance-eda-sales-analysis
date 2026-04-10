@@ -24,7 +24,7 @@ The analysis combines:
 ## Tools Used
 MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 
-## Project Deliverables
+### Project Deliverables
 - SQL analysis scripts
 - Python visualization scripts and exported charts
 - Dashboard screenshots / Power BI reporting
@@ -47,76 +47,6 @@ finance-eda-sales-analysis/
 - `data/src/` - Python scripts for database extraction and plotting
 - `data/images/` - exported charts used in the README and reporting
 - `data/dashboards/` - Power BI dashboard screenshots or files
-
-## How to Run This Project
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/NikolayKotovanalytics/finance-eda-sales-analysis.git
-cd finance-eda-sales-analysis
-```
-
-### 2. Create and activate a virtual environment
-
-**Windows**
-```bash
-python -m venv venv
-```
-```bash
-venv\Scripts\activate
-```
-
-### 3. Install project dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Download the dataset
-
-This project uses the public Transactions Fraud Dataset from Kaggle.
-
-Download it from Kaggle at:
-
-https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
-
-Raw data is not included in this repository due to size and licensing constraints.
-
-### 5. Create the MySQL database and import the dataset tables
-```sql
-CREATE DATABASE financial_transactions_dataset;
-```
-Then import the dataset tables into that database.
-
-### 6. Configure database credentials
-
-Create a `.env` file in the project root:
-```env
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=financial_transactions_dataset
-DB_USER=your_username
-DB_PASSWORD=your_password
-```
-
-### 7. Run scripts and review outputs
-
-- SQL analysis scripts: `data/sql/`
-
-Recommended order:
-1. `phase_1_understand_data.sql`
-2. `phase_2_time_based_analysis.sql`
-3. `phase_3_customer_behavior_and_revenue_structure.sql`
- 
-- Python scripts: `data/src/`
-
-After the database is set up, run the Python scripts in data/src/ to generate charts:
-```bash
-python data/src/phase2_monthly_revenue.py
-python data/src/phase2_refunds_active_customers.py
-```
-- Visualizations: `data/images/`
-- Dashboard screenshots: `data/dashboards/`
 
 ## Dataset Overview
 The project uses a large transaction-level dataset containing approximately 13 million transaction records and supports time-based, customer-level, and payment-related analysis.
@@ -338,16 +268,87 @@ https://drive.google.com/file/d/1wL0z1XCwDGNyfbKGTKyleXwxc9j4jrvc/view?usp=drive
 
 ===============================================================================================================================================================================
 ===============================================================================================================================================================================
-
-## Business Recommendations
-- Monitor revenue seasonality to improve planning and campaign timing
-- Investigate refund spikes by product, region, or operational process
-- Build retention strategies for high-value customers
-- Review payment validation rules for transactions involving expired cards
-- 
 ## EDA Conclusions
 
 The database was investigated for structure, completeness, and missing values.  
 Multiple analytical metrics were applied to analyze revenue trends and customer behavior.  
 Refund patterns, customer reactivation spikes, and card usage were analyzed to identify potential fraud indicators.
 
+## Business Recommendations
+- Monitor revenue seasonality to improve planning and campaign timing
+- Investigate refund spikes by product, region, or operational process
+- Build retention strategies for high-value customers
+- Review payment validation rules for transactions involving expired cards
+
+===============================================================================================================================================================================
+===============================================================================================================================================================================
+
+## How to Run This Project
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/NikolayKotovanalytics/finance-eda-sales-analysis.git
+cd finance-eda-sales-analysis
+```
+
+### 2. Create and activate a virtual environment
+
+**Windows**
+```bash
+python -m venv venv
+```
+```bash
+venv\Scripts\activate
+```
+
+### 3. Install project dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Download the dataset
+
+This project uses the public Transactions Fraud Dataset from Kaggle.
+
+Download it from Kaggle at:
+
+https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
+
+Raw data is not included in this repository due to size and licensing constraints.
+
+### 5. Create the MySQL database and import the dataset tables
+```sql
+CREATE DATABASE financial_transactions_dataset;
+```
+Then import the dataset tables into that database.
+
+### 6. Configure database credentials
+
+Create a `.env` file in the project root:
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=financial_transactions_dataset
+DB_USER=your_username
+DB_PASSWORD=your_password
+```
+
+### 7. Run scripts and review outputs
+
+- SQL analysis scripts: `data/sql/`
+
+Recommended order:
+1. `phase_1_understand_data.sql`
+2. `phase_2_time_based_analysis.sql`
+3. `phase_3_customer_behavior_and_revenue_structure.sql`
+ 
+- Python scripts: `data/src/`
+
+After the database is set up, run the Python scripts in data/src/ to generate charts:
+```bash
+python data/src/phase2_monthly_revenue.py
+python data/src/phase2_refunds_active_customers.py
+```
+- Visualizations: `data/images/`
+- Dashboard screenshots: `data/dashboards/`
