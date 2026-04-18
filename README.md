@@ -76,167 +76,46 @@ This analysis demonstrates how transaction data can be used to:
 - Detect potential fraud patterns
 - Support marketing and retention strategies
 
-===============================================================================================================================================================================
-===============================================================================================================================================================================
+## Methodology
 
-## Phase 1 – Data Understanding
+### Phase 1 — Data Preparation
+**Goal:** Prepare the data for analysis in MySQL  
+**Tasks completed:**
+- validated column structure
+- reviewed key fields
+- checked nulls and data consistency
 
-## Objective
-Investigate dataset structure, detect missing data, identify active customers, time coverage, total revenue, refund volumes, and find data that may indicate fraud
+### Phase 2 — Time-Based Analysis
+**Goal:** Understand monthly revenue, seasonality, refunds trend over time, RFM for active customers (i.e. these with at least one transaction)
+**Techniques used:**
+- aggregations
+- date transformations
+- monthly grouping
+- trend visualization
 
-**Dataset:** Kaggle – Transactions Fraud Dataset
-**Entities:** Transactions, Users, Cards  
+### Phase 3 — Customer Behavior and Revenue Structure
+**Goal:** Identify customer concentration and revenue contribution patterns  
+**Techniques used:**
+- ranking customers
+- contribution analysis
+- segmentation logic
 
-### Key insights
-- Dataset is composed of 3 tables which contain data about transactions, bank cards and clients
-- No missing data found (NULL)
-- Dataset comprise 2000 unique clients who made ~13M transactions with unique 6146 bank cards
-- Out of 2000 clients listed, 1219 active clients, i.e. with at least one transaction. An Id list of non-active customers is shown
-- Out of 6146 bank cards, 2075 cards performed 0 transactions. An Id list of their clients is shown
-- Dataset covers a period from 2010/01/01 till 2019/10/31, i.e. 3590 days in total
-- Total transaction value: ~$571M which includes gross income $639M and -$67.5M refunds
-- Cards data contains information about cards presence on Darkweb. None cards were noted there
-- Data was checked for fraud indicators: No card numbers were used twice and 0 cards without a registered client were found
+### Phase 4 — Fraud / Anomaly Analysis
+**Goal:** Detect suspicious or unusual payment behavior  
+**Focus areas:**
+- expired card transactions
+- refund irregularities
+- possible data quality or control issues
 
-SQL scripts: `/data/sql/phase_1_understand_data.sql`
-
-===============================================================================================================================================================================
-
-##  Phase 2 – Time-Based Revenue Analysis (EDA)
-
-## Objective
-Analyze revenue dynamics over time to identify trends, seasonality, volatility, customer activity patterns, and refund behavior in a large financial transactions dataset.
-
-**Dataset:** Kaggle – Transactions Fraud Dataset  
-**Entities:** Transactions, Cards  
-
-Key Analyses Performed
-
-1. Monthly Revenue Trends
-Aggregated transaction amounts by month to observe long-term revenue evolution from 2010 to 2019.
-
-2. Month-over-Month (MoM) Revenue Change
-Calculated absolute and percentage MoM revenue changes using window functions to identify growth acceleration and slowdowns.
-
-3. Rolling 3-Month Revenue
-Applied rolling window aggregation to smooth short-term volatility and highlight underlying revenue trends.
-
-4. Yearly Revenue and Refunds
-Summarized total revenue and total refund amounts by year to assess long-term business growth and operational risk.
-
-5. Seasonality Analysis
-Computed average monthly revenue across years and ranked months to detect recurring seasonal patterns.
-
-6. Transaction Volume vs Revenue
-Compared transaction counts with total revenue to derive average transaction value per month.
-
-7. Refund Trend Over Time
-Analyzed refund volumes and refund transaction ratios to assess operational risk and customer behavior.
-
-8. Revenue Volatility by Year
-Calculated standard deviation of monthly revenue per year to measure financial stability and risk exposure.
-
-9. Revenue per Active Customer / per Bank Card
-Measured average gross revenue per active customer and per card per month to evaluate monetization efficiency.
-
-10. RFM Segmentation with Refund Behavior (Value vs Risk Analysis)
-Combined Recency, Frequency, and Monetary (RFM) metrics with refund behavior to classify clients into revenue and refund segments.
-
-- Revenue segments were ranked hierarchically: Champion > Loyal > Big spenders > At Risk > New > Inactive
-- Refund behavior was classified by monetary and frequency-based ratios into No refunds, Normal behavior, Occasional large refunds, High-risk customer, Potential Abuse
-- Final segmentation allows identifying high-value clients, at-risk customers, and potential refund abuse cases.
-
-11. Data Safety Checks – Card Expiration Validation
-Verified whether any transactions occurred after the respective bank card had expired.
-
-- Identified client IDs, card IDs, and transaction dates where the transaction occurred after card expiration.
-- Helps detect potential operational errors or fraudulent activity.
-
-### Key Insights
-
-- Revenue exhibits long-term growth with pronounced seasonal variations.
-- Certain years show increased revenue volatility, indicating higher financial risk.
-- Refund ratios remain relatively stable but spike during specific periods, warranting further investigation.
-- Hierarchical RFM segmentation allows prioritizing marketing efforts and detecting potential refund abuse while maintaining a value vs risk perspective.
-- Card expiration checks revealed transactions post-expiration, highlighting operational or security issues that require attention.
-
-SQL scripts: `/data/sql/phase_2_time_based_analysis.sql`
-
-## Selected data was plotted as graphs
-Visualizations: `/data/images/`  
-Python plotting scripts: `/data/src`
-
-===============================================================================================================================================================================
-
-## Phase 3 — Customer Behavior & Revenue Structure  (EDA)
-
-## Objective
-Analyze customer purchasing behavior, revenue distribution, customer lifecycle patterns, and potential fraud signals in a financial transactions dataset.
-
-**Dataset:** Kaggle – Transactions Fraud Dataset  
-**Period:** 2010 – 2019  
-**Entities:** Transactions, Cards  
-
-Key Analyses Performed
-
-1. Top 20 Clients by Revenue 
-Identified highest revenue-generating customers.
-
-2. Revenue share generated of Top 10% of customers
-Measured revenue concentration among top-performing customers.
-
-3. Customer Purchase Frequency Segmentation
-Segmented customers into frequency groups using percentile ranking based on lifetime monthly purchase behavior.
-
-Additionally analyzed:
-- average purchase frequency per group
-- customer-level refund behavior
-- business-level refund impact
-
-4. Average Days Between Purchases
-Calculated average time between purchases per customer to understand engagement patterns.
-
-5. Customer Segmentation by Total Orders
-Grouped customers into quartiles based on total number of purchases.
-
-6. Revenue vs Frequency Matrix
-Built a 2 x 2 matrix to segmentation using average-based thresholds:
-
-High Revenue / High Frequency
-High Revenue / Low Frequency
-Low Revenue / High Frequency
-Low Revenue / Low Frequency
-
-Used for identifying:
-- high-value customers
-- underperforming segments with growth potential
-
-7. Refund ratio per customer
-Calculated refund share per customer to detect abnormal return behavior.
-
-8. Dormant Customer Reactivation Spike
-Identified customers generating significant revenue after periods of inactivity (>60 days).
-Measured reactivation impact as share of total customer revenue to detect:
-- successful reactivation
-- unusual spending spikes (potential fraud signal)
-
-9.  Card Sharing Detection
-Identified cards used by multiple clients as a potential fraud indicator.
-
-### Key Insights
-
- Revenue is concentrated among a relatively small group of high-value customers.
-- Customer behavior varies significantly in purchase frequency and engagement cycles.
-- Frequency segmentation combined with revenue highlights actionable customer groups for marketing strategies.
-- Refund behavior analysis reveals both normal patterns and potential anomalies.
-- Potential fraud indicators were analyzed using:
-  1. high refund ratios
-  2. abnormal reactivation spikes
-  3. shared card usage
-
-SQL scripts: `/data/sql/phase_3_customer_behavior_and_revenue_structure.sql`
-
-===============================================================================================================================================================================
+## Key Insights
+```text
+|    Analysis Area  |                      Finding                   |                  Business Implication                |
+|-------------------|------------------------------------------------|------------------------------------------------------|
+|   Revenue Trends  |           Visible seasonality of Revenue       |    Useful for planning, forecasting, and staffing    |
+| Customer Revenue  |   Revenue is concentrated among top customers  |  Indicates retention risk if key customers are lost  |
+|  Refund Activity  |     Refund spikes occur in specific periods    | Worth investigating for operational or policy issues |
+| Payment Anomalies | Some transactions appear after card expiration |    May indicate data-quality or control weaknesses   |
+```
 
 ## Dashboard & Data Visualization
 
@@ -279,6 +158,11 @@ Refund patterns, customer reactivation spikes, and card usage were analyzed to i
 - Investigate refund spikes by product, region, or operational process
 - Build retention strategies for high-value customers
 - Review payment validation rules for transactions involving expired cards
+
+## Limitations
+- The analysis is based on the available synthetic dataset and may not reflect missing external business context
+- Suspicious transaction patterns are indicators, not proof of fraud
+- Some findings may require product, region, or channel-level breakdown for deeper interpretation
 
 ===============================================================================================================================================================================
 ===============================================================================================================================================================================
@@ -342,6 +226,7 @@ Recommended order:
 1. `phase_1_understand_data.sql`
 2. `phase_2_time_based_analysis.sql`
 3. `phase_3_customer_behavior_and_revenue_structure.sql`
+4. `phase_4_fraud_and_anomaly_analysis.sql`
  
 - Python scripts: `data/src/`
 
@@ -350,5 +235,4 @@ After the database is set up, run the Python scripts in data/src/ to generate ch
 python data/src/phase2_monthly_revenue.py
 python data/src/phase2_refunds_active_customers.py
 ```
-- Visualizations: `data/images/`
-- Dashboard screenshots: `data/dashboards/`
+- Visualizations: `data/images/` 
