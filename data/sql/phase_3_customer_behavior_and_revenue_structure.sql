@@ -1,98 +1,133 @@
--- SQL EDA Phase 3: Customer Behavior & Revenue Structure
--- Note. The CTAS clean_transactions which was created in Phase 1 of EDA is used here to avoid code repetition in this Phase.
----------------------------------------------------------------------------
+/*
+-- ============================================================================
+SQL EDA Phase 3: Customer Behavior & Revenue Structure 
+Purpose: Analyze customer revenue concentration, purchase behavior, and refund patterns
+to understand which customers drive revenue and how customer activity differs across segments.
+
+-- Contents:
+-- Task 1. Top 20 Clients by Gross Revenue
+-- Task 2. Revenue Share of Top 10% Clients
+-- Task 3. Customer Purchase Frequency Segmentation
+-- Task 4. Average Days Between Purchases
+-- Task 5. Customer Segmentation by Total Orders
+-- Task 6. Revenue vs Frequency Matrix
+-- Task 7. Refund Ratio per Client
+-- ============================================================================
+*/
 
 -- select the dataset to work with:
 USE financial_transactions_dataset;
+-- Note. The CTAS clean_transactions which was created in Phase 1 of EDA is used here to avoid code repetition in this Phase.
 
--- Task 1 – Top 20 Clients by Revenue
 
-WITH ranking AS  -- CTE: Ranking clients based on their revenue
-    (SELECT 
-        client_id,
-        SUM(CASE WHEN amount_cleaned > 0 THEN amount_cleaned ELSE 0 END) as client_total_revenue,  -- gross revenue focused
-        ROW_NUMBER() OVER (ORDER BY SUM(amount_cleaned) DESC) as revenue_rank  -- ROW_Number function to rank clients without double or missing ranks 
-    FROM clean_transactions
-    GROUP BY client_id
-    )
+-- ============================================================================
+-- Task 1 Top 20 Clients by Gross Revenue
+-- Goal: Find main revenue contributors
+-- ============================================================================
 
--- Main Query: filtering data to reveal TOP 20 clients based on the revenue 
+-- CTE calculate total gross revenue for further calculation of the client gross revenue ratio in percantages
+WITH total_rev AS (
+SELECT 
+    SUM(CASE WHEN amount_cleaned > 0 THEN amount_cleaned ELSE 0 END) AS total_gross_revenue
+FROM clean_transactions),
+
+-- CTE: Ranking clients based on their gross revenue
+ranking AS ( 
+SELECT 
+    client_id,
+    SUM(CASE WHEN amount_cleaned > 0 THEN amount_cleaned ELSE 0 END) AS client_total_gross_revenue,  -- gross revenue focused
+    ROW_NUMBER() OVER (
+        ORDER BY SUM(CASE WHEN amount_cleaned > 0 THEN amount_cleaned ELSE 0 END) DESC
+    ) AS gross_revenue_rank  -- ROW_Number function to rank clients without duplicates or missing ranks 
+FROM clean_transactions
+GROUP BY client_id)
+
+-- Main Query: filtering data to reveal the top 20 clients by gross revenue 
 SELECT       
     client_id AS TOP_20_clients,
-    client_total_revenue,
-    revenue_rank
+    client_total_gross_revenue,
+    ROUND(100 * client_total_gross_revenue / (
+        SELECT                                      -- use precalculated value for speed
+            total_gross_revenue 
+        FROM total_rev), 2
+    ) AS client_gross_revenue_ratio_pct,
+    gross_revenue_rank
 FROM ranking
-WHERE revenue_rank < 21 -- Filter TOP 20 clients based on the revenue
-ORDER BY revenue_rank;
+WHERE gross_revenue_rank < 21                       -- filtering limit
+ORDER BY gross_revenue_rank;
+
+-- Insight: Identifies the largest gross revenue contributors and shows how much
+-- each of the top clients contributes to total gross revenue.
 
 
--- Task 2 – Revenue Share of Top 10% Customers
+-- ============================================================================
+-- Task 2 Revenue Share of Top 10% Clients
+-- Goal: Find main revenue contributors' share
+-- ============================================================================
 
-WITH revenue AS -- CTE: Calculating clients total revenue
-    (SELECT 
-        client_id,
-        SUM(amount_cleaned) as client_revenue -- for this analysis client's net revenue is more relevant and thus only it is calulated
-    FROM clean_transactions
-    GROUP BY client_id
-    ),
+-- CTE: Calculating clients total revenue
+WITH revenue AS (
+SELECT 
+    client_id,
+    SUM(amount_cleaned) as client_net_revenue -- for this analysis client's net revenue is more relevant and thus only it is calculated
+FROM clean_transactions
+GROUP BY client_id),
 
-ranked_clients AS -- CTE: Ranking clients based on revenue
-    (SELECT 
-        client_id,
-        client_revenue,        
-        SUM(client_revenue) OVER () AS total_revenue,        
-        CUME_DIST() OVER (ORDER BY client_revenue DESC) AS dist_rank -- ranking using Cume_Dist as it returns percentage of partition values less than or equal to the value in the current row
-    FROM revenue
-    )
+-- CTE: Ranking clients based on revenue
+ranked_clients AS (
+SELECT 
+    client_id,
+    client_net_revenue,        
+    SUM(client_net_revenue) OVER () AS total_net_revenue,        
+    CUME_DIST() OVER (ORDER BY client_net_revenue DESC) AS dist_rank -- ranking using Cume_Dist as it returns percentage of partition values less than or equal to the value in the current row
+FROM revenue)
 
 -- Main Query: filtering data and calculating cumulative revenue share of TOP 10% clients based on revenue
 SELECT      
-    MAX(total_revenue) AS total_revenue, 
-    SUM(client_revenue) AS top10_revenue, -- Total revenue of TOP 10% clients
-    ROUND(100 * SUM(client_revenue) / MAX(total_revenue), 2) AS top10_revenue_share_pct   -- Calculating the total percantage share of TOP10% clients
+    MAX(total_net_revenue) AS total_net_revenue, 
+    SUM(client_net_revenue) AS top10_net_revenue,                                                     -- Total revenue of TOP 10% clients
+    ROUND(100 * SUM(client_net_revenue) / MAX(total_net_revenue), 2) AS top10_net_revenue_share_pct   -- Calculating the total percantage share of TOP10% clients
 FROM ranked_clients
 WHERE dist_rank <= 0.10; -- Filters top 10% customers by revenue 
 
--- Result: Revenue Share of Top 10% Customers is 23.86% of total revenue
+-- Insight: Measures customer revenue concentration by estimating how much of
+-- total net revenue is generated by the top 10% of clients.
 
 
--- Task 3 – Customer Purchase Frequency Segmentation 
+-- ============================================================================
+-- Task 3 Customer Purchase Frequency Segmentation 
+-- Goal: Categorize clients by purchase frequency over their active lifetime with accoount to refunds
+-- ============================================================================
 
-WITH customer_lifetime AS -- CTE: preliminary calcuations per client
-    (SELECT
-        client_id,
-        SUM(CASE WHEN amount_cleaned > 0 THEN amount_cleaned ELSE 0 END) AS monetary_client_revenue,
-        SUM(CASE WHEN amount_cleaned < 0 THEN -1 * amount_cleaned ELSE 0 END) AS monetary_client_refund,
-        COUNT(CASE WHEN amount_cleaned > 0 THEN 1 END) AS total_purchases, -- Calculate total purchases without returns for next step - frequency calculations
-        MIN(transaction_month) AS first_month,
-        MAX(transaction_month) AS last_month
-    FROM clean_transactions
-    GROUP BY client_id
-    ),
+-- CTE: preliminary calcuations per client
+WITH customer_lifetime AS (
+SELECT
+    client_id,
+    SUM(CASE WHEN amount_cleaned >= 0 THEN amount_cleaned ELSE 0 END) AS monetary_client_gross_revenue,
+    SUM(CASE WHEN amount_cleaned < 0 THEN -1 * amount_cleaned ELSE 0 END) AS monetary_client_refund,
+    COUNT(CASE WHEN amount_cleaned > 0 THEN 1 END) AS total_purchases, -- Calculate total purchases without returns for next step - frequency calculations
+    MIN(transaction_month) AS first_month,
+    MAX(transaction_month) AS last_month
+FROM clean_transactions
+GROUP BY client_id),
 
-lifetime_frequency AS -- CTE: Convert lifetime window into an active period of each customer
-    (SELECT
-        client_id,
-        monetary_client_revenue,
-        monetary_client_refund,
-        100 * monetary_client_refund / NULLIF(monetary_client_revenue, 0) AS refund_ratio_pct,
-        total_purchases,
-        (
-            TIMESTAMPDIFF(                      -- Calculates number of months between the first and last purchases which is a time while a client was active. Add 1 because it starts counting months with "0".
-                MONTH,
-                STR_TO_DATE(first_month, '%Y-%m-%d'), -- Converts to DATE format DATE_FORMAT, because TIMESTAMPDIFF requires it. Note, in the first CTE DATE_FORMAT() returns string value and MIN/MAX() work with strings
-                STR_TO_DATE(last_month, '%Y-%m-%d')
-            ) + 1
-        ) AS lifetime_months, -- Active period of a customer
-        total_purchases / (TIMESTAMPDIFF(MONTH, STR_TO_DATE(first_month, '%Y-%m-%d'), STR_TO_DATE(last_month, '%Y-%m-%d')) + 1) AS purchase_frequency, -- Calculate purchase frequency as total purchases divided by active months
-        PERCENT_RANK() OVER (
-            ORDER BY 
-                total_purchases /
-                (TIMESTAMPDIFF(MONTH, STR_TO_DATE(first_month, '%Y-%m-%d'), STR_TO_DATE(last_month, '%Y-%m-%d')) + 1) 
-            ASC
-        ) AS frequency_group_rank
-    FROM customer_lifetime
-    ) -- Note: purchase_frequency range appears to be ca. 357 - 5 purchases per month
+-- CTE: Convert lifetime window into an active period of each customer
+lifetime_frequency AS (
+SELECT
+    client_id,
+    monetary_client_gross_revenue,
+    monetary_client_refund,
+    100 * monetary_client_refund / NULLIF(monetary_client_gross_revenue, 0) AS refund_ratio_pct,
+    total_purchases,
+    (TIMESTAMPDIFF(MONTH, first_month, last_month) + 1             -- strarts with  0, so +1 is required
+    ) AS lifetime_months, -- Active period of a customer calculated as a number of months between the first and last purchases
+    total_purchases / (TIMESTAMPDIFF(MONTH, first_month, last_month) + 1) AS purchase_frequency, -- Calculate purchase frequency as total purchases divided by active months
+    PERCENT_RANK() OVER (
+        ORDER BY 
+            total_purchases /
+            (TIMESTAMPDIFF(MONTH, first_month, last_month) + 1) 
+        ASC) AS frequency_group_rank
+FROM customer_lifetime)    
 
 -- Main Query: Grouping clients by frequency of their purchases and calculating average and total refund ratio for each group
 SELECT 
@@ -103,37 +138,40 @@ SELECT
         WHEN frequency_group_rank >= 0.05 THEN 'Low Frequency'       
         ELSE 'Very Low Frequency'                           
     END AS frequency_group_label,
-    COUNT(*) AS customer_count, -- counts number of clients in each group,
-    ROUND(AVG(purchase_frequency), 2) AS avg_frequency, -- indicates average frequency of purchases in each group
+    COUNT(*) AS customer_count,                                  -- counts number of clients in each group,
+    ROUND(AVG(purchase_frequency), 2) AS avg_frequency,          -- indicates average frequency of purchases in each group
     ROUND(AVG(refund_ratio_pct), 2) AS avg_client_refund_ratio,  -- customer-level behavioral view: indicates average refund ratio per client
     ROUND(
         100 * SUM(monetary_client_refund) / 
-        NULLIF(SUM(monetary_client_revenue), 0)
-        , 2) AS total_refund_ratio_pct      -- buisness impact view: indicates total refund ratio in each group
+        NULLIF(SUM(monetary_client_gross_revenue), 0) , 2
+    ) AS total_refund_ratio_pct                            -- buisness impact view: indicates total refund ratio in each group
 FROM lifetime_frequency
 GROUP BY frequency_group_label;
--- Result: 5% (61) of very frequent buyers (200+ transactions/month) share similar numbers in behavioral view and buisness impact views. This occurs despite customers 
--- vastly vary in money spent because the high and low spenders are distributed equally in groups. 
--- To get more action-relevant insight, a revenue metric for high and low spenders can be added in the grouping to separate them basing on decision maker needs 
+
+-- Insight: Groups clients by purchase frequency over their active lifetime and compares refund behavior
+-- across segments from both a customer-level and business-impact perspective.
 
 
+-- ============================================================================
 -- Task 4 – Average Days Between Purchases 
+-- Goal: Find periods of clients activity
+-- ============================================================================
 
-WITH clean_data AS  -- CTE: Prepare data for further manipulations
-    (SELECT DISTINCT -- DISTINCT applied to date excludes multiple purchases on the same day
-            client_id,
-            transaction_date      
-    FROM clean_transactions
-    WHERE amount_cleaned > 0  -- Exclude refunds
-    ),
+ -- CTE: Prepare data for further manipulations
+WITH clean_data AS (
+SELECT DISTINCT -- when DISTINCT applied to date, it excludes multiple purchases on the same day
+    client_id,
+    transaction_date      
+FROM clean_transactions
+WHERE amount_cleaned > 0),  -- Exclude refunds
 
-lagging AS -- CTE: lags a date coloumn for calculation of days between purchases
-    (SELECT 
-        client_id,
-        transaction_date,
-        LAG(transaction_date) OVER (PARTITION BY client_id ORDER BY transaction_date) AS previous_buy
-    FROM clean_data
-    )
+-- CTE: lags a date coloumn for calculation of days between purchases
+lagging AS ( 
+SELECT 
+    client_id,
+    transaction_date,
+    LAG(transaction_date) OVER (PARTITION BY client_id ORDER BY transaction_date) AS previous_buy
+FROM clean_data)
 
 -- Main Query: calculates average day between purchases for each client
 SELECT 
@@ -143,27 +181,32 @@ FROM lagging
 GROUP BY client_id
 ORDER BY client_id;
 
+-- Insight: Estimates the average number of days between purchases for each
+-- client, which helps describe purchase cadence and engagement intensity.
 
+
+-- ============================================================================
 -- TASK 5  Customer Segmentation by Total Orders
+-- Goal: Divide customers in groups according total transactions they perfomred
+-- ============================================================================
 
-WITH clean_data AS  -- CTE: Calculate total number of orders per customer excluding refunds
-    (SELECT 
-        client_id,
-        COUNT(*) AS client_total_orders       
-    FROM clean_transactions
-    WHERE amount_cleaned > 0  -- Exclude refunds
-    GROUP BY client_id
-    ), 
+-- CTE: Calculate total number of orders per customer excluding refunds
+WITH clean_data AS (  
+SELECT 
+    client_id,
+    COUNT(*) AS client_total_orders       
+FROM clean_transactions
+WHERE amount_cleaned > 0  -- Exclude refunds
+GROUP BY client_id), 
 
-labelling AS -- CTE: Group clients by total number of their orders
-    (SELECT 
-        client_id,
-        client_total_orders,  
-        NTILE(4) OVER (ORDER BY client_total_orders DeSC) AS clients_category
-    FROM  clean_data
-    WHERE client_total_orders > 0 -- exclude customers with 0 purchases
-    )
-
+labelling AS ( -- CTE: Group clients by total number of their orders
+SELECT 
+    client_id,
+    client_total_orders,  
+    NTILE(4) OVER (ORDER BY client_total_orders DeSC) AS clients_category
+FROM  clean_data
+WHERE client_total_orders > 0) -- exclude customers with 0 purchases
+    
 -- Main Query: Show groups, number of clients in these groups and their respective share
 SELECT  
     CASE
@@ -176,86 +219,113 @@ SELECT
     ROUND(AVG(client_total_orders), 2) -- avg number of orders in each category
 FROM labelling
 GROUP BY clients_category;
--- Result: All clients were categorized in 4 equal size categories based on their total purchases amount
+
+-- Insight: Divides clients into four equally sized groups based on total
+-- purchase count, providing a simple view of overall order intensity.
 
 
+-- ============================================================================
 -- Task 6 Revenue vs Frequency Matrix
+-- Goal: Group clients basing on their revenue and activity parameters
+-- ============================================================================
 
-WITH customer_lifetime AS -- CTE: Customer lifetime window + total purchases
-    (SELECT
-        client_id,
-        COUNT(*) AS total_purchases, -- Calculates total purchases for next step - frequency calculations
-        MIN(transaction_month) AS first_month,
-        MAX(transaction_month) AS last_month,
-        SUM(amount_cleaned) AS total_revenue -- Calculates total revenue for next step 
-    FROM clean_transactions
-    WHERE amount_cleaned > 0 -- Exclude refunds
-    GROUP BY client_id
-    ),
+-- CTE: Customer lifetime window + total purchases
+WITH customer_lifetime AS (
+SELECT
+    client_id,
+    COUNT(*) AS total_purchases,            -- Calculates total purchases for next step - frequency calculations
+    MIN(transaction_month) AS first_month,
+    MAX(transaction_month) AS last_month,
+    SUM(amount_cleaned) AS total_gross_revenue    -- Calculates total gross revenue for next step 
+FROM clean_transactions
+WHERE amount_cleaned > 0                    -- Exclude refunds
+GROUP BY client_id),
 
-lifetime_frequency AS -- CTE: converts lifetime window into client's active period
-    (SELECT
-        client_id,
-        total_purchases,
-        TIMESTAMPDIFF(MONTH, first_month, last_month) + 1 AS lifetime_months, -- Active period of a customer, Calculate number of months between the first and last purchases which is a time while a client was active. Add 1 because it starts counting months with "0".
-        total_revenue
-    FROM customer_lifetime
-    ),
+-- CTE: converts lifetime window into client's active period
+lifetime_frequency AS ( 
+SELECT
+    client_id,
+    total_purchases,
+    TIMESTAMPDIFF(MONTH, first_month, last_month) + 1 AS lifetime_months, -- Active period of a customer, Calculate number of months between the first and last purchases which is a time while a client was active. Add 1 because it starts counting months with "0".
+    total_gross_revenue
+FROM customer_lifetime),
 
-client_labels AS  -- CTE: label clients by frequency and revenue groups for the next step of grouping them in the matrix 
-    (SELECT 
-        client_id,
-        CASE        -- Labelling based on frequency
-            WHEN total_purchases / NULLIF(lifetime_months, 0) > AVG(total_purchases / lifetime_months) OVER () THEN 'High frequency' 
-            ELSE 'Low frequency'
-        END AS client_purchase_frequency,
-        CASE        -- Labelling based on revenue
-            WHEN total_revenue > AVG(total_revenue) OVER () THEN 'High revenue'
-            ELSE 'Low revenue'
-        END AS client_revenue
-    FROM lifetime_frequency
-    )
+-- CTE: label clients by frequency and revenue groups for the next step of grouping them in the matrix 
+client_labels AS ( 
+SELECT 
+    client_id,
+
+-- frequency part
+    CASE 
+        WHEN total_purchases / NULLIF(lifetime_months, 0) > AVG(total_purchases / lifetime_months) OVER () THEN 'High frequency' 
+        ELSE 'Low frequency'
+    END AS client_purchase_frequency,
+
+-- revenue part
+    CASE                        
+        WHEN total_gross_revenue > AVG(total_gross_revenue) OVER () THEN 'High revenue'
+        ELSE 'Low revenue'
+    END AS client_gross_revenue
+FROM lifetime_frequency)
 
 -- Main Query: Final Revenue vs Frequency Matrix
 SELECT 
     client_purchase_frequency,
-    client_revenue,
+    client_gross_revenue,
     COUNT(*) AS clients_number, -- calculate number of clients in each group
     ROUND(100 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS share_pct -- calculates share percentage of the group;
 FROM client_labels
-GROUP BY client_purchase_frequency, client_revenue;
--- Result: Clients with High frequency of purchases and High revenue are 29.12% of all active client base,
--- while clients with Low frequency and High revenue are 8.86% of all clients and actions can be done to make purchases more frequently 
+GROUP BY client_purchase_frequency, client_gross_revenue;
+
+-- Insight: This matrix groups clients by relative purchase frequency and revenue level, helping distinguish high-value active customers
+-- from groups that may need different retention or upsell strategies.
 
 
+-- ============================================================================
 -- Task 7 Refund ratio per client
+-- Goal: Understand how much of runds are there per client
+-- ============================================================================
 
-WITH precalculus AS -- CTE:  Calculate total spent and total refunds per client
-    (SELECT 
-        client_id,
-        SUM(CASE WHEN amount_cleaned > 0 THEN amount_cleaned ELSE 0 END) AS total_spending, -- Calculates total spending
-        SUM(CASE WHEN amount_cleaned < 0 THEN amount_cleaned ELSE 0 END) AS total_refund -- Calculates total refunds
-    FROM clean_transactions
-    GROUP BY client_id
-    ),
+-- CTE:  Calculate total spent and total refunds per client
+WITH precalculus AS (
+SELECT 
+    client_id,
+    SUM(CASE WHEN amount_cleaned > 0 THEN amount_cleaned ELSE 0 END) AS total_gross_revenue, -- Calculates total spending
+    -1 * SUM(CASE WHEN amount_cleaned < 0 THEN amount_cleaned ELSE 0 END) AS total_refund         -- Calculates total refunds
+FROM clean_transactions
+GROUP BY client_id),
 
-calculus AS -- CTE:  Calculate refunds share per client
-    (SELECT 
-        client_id,
-        total_spending,
-        total_refund,
-        100 * -1 * total_refund / total_spending AS refund_ratio -- Note: positive value; calculates refund ratio as percantage of total spending
-    FROM precalculus
-    )
+-- CTE:  Calculate refunds share per client
+calculus AS (
+SELECT 
+    client_id,
+    total_gross_revenue,
+    total_refund,
+    100 * total_refund / NULLIF(total_gross_revenue, 0) AS refund_ratio -- Note: positive value; calculates refund ratio as percantage of total spending
+FROM precalculus)
 
 -- Main Query: filter clients with high refunds prioritize these with high spending
 SELECT 
     client_id AS clients_with_refunds_over_33pct, -- Top clients have suspicious amount of refunds
-    total_spending,
+    total_gross_revenue,
     total_refund,
     refund_ratio
 FROM calculus
 WHERE refund_ratio > 33 -- Filters for high refunds
-ORDER BY total_spending DESC, refund_ratio DESC -- Prioritizes higher spending and higher refunds;
--- Result: Finds clients with refund ratio over 33, which could be used as a potential fraud indicator or 
--- investigation action to identify the reason for so many returns requests which can improve sales in future.
+ORDER BY total_gross_revenue DESC, refund_ratio DESC; -- Prioritizes higher spending and higher refunds
+
+-- Insight: Flags clients with unusually high refund ratios relative to their gross spending, which may indicate abuse,
+--  dissatisfaction, or a need for deeper operational review.
+
+
+-- ============================================================================
+-- Summary
+-- ============================================================================
+-- Phase 3 analyzes how revenue is distributed across customers and how client
+-- behavior differs across segments. The section covers:
+-- - Most valuable clients revenue-wise
+-- - How concentrated revenue top clients generated
+-- - Clients purchase frequency and how long they stay active
+-- - Grouping clients by total order volume and revenue
+-- - Frequency-versus-revenue matrix for customer profiling
+-- - Detection of clients with unusually high refund ratios
