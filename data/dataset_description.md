@@ -17,7 +17,7 @@ The raw data is not included in this repository.
 - `cards_data.csv`
 
 ## Size
-~10+ million transaction records
+~13+ million transaction records
 
 ## Description
 This dataset contains financial transaction records including:
