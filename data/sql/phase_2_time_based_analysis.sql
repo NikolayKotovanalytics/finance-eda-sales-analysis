@@ -1,7 +1,7 @@
 /*
 -- ============================================================================
 SQL EDA Phase 2: Time-Based Revenue Analysis 
-Purpose: Understand seasonality of revenue and refunds trends from various perspectives and at various time scales  
+Purpose: Analyze how revenue and refunds change over time, including trend, seasonality, volatility, and customer activity patterns
 
 -- Contents:
 -- Task 1. Monthly revenue
