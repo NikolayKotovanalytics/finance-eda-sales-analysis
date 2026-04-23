@@ -104,12 +104,16 @@ cd finance-eda-sales-analysis
 **Windows**
 ```bash
 python -m venv venv
-```
-```bash
 venv\Scripts\activate
 ```
 
+**MacOS/Linux**
+```bash
+python -m venv venv
+source venv/bin/activate
+```
 ### 3. Install project dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -118,9 +122,7 @@ pip install -r requirements.txt
 
 This project uses the public Transactions Fraud Dataset from Kaggle.
 
-Download it from Kaggle at:
-
-https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets
+Download it from Kaggle at: [Transactions Fraud Dataset](https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets)
 
 Raw data is not included in this repository due to size and licensing constraints.
 
@@ -133,6 +135,7 @@ Then import the dataset tables into that database.
 ### 6. Configure database credentials
 
 Create a `.env` file in the project root:
+
 ```env
 DB_HOST=localhost
 DB_PORT=3306
@@ -151,10 +154,8 @@ Recommended order:
 3. `phase_3_customer_behavior_and_revenue_structure.sql`
 4. `phase_4_fraud_and_anomaly_analysis.sql`
  
-- Python scripts: `data/src/`
-
-After the database is set up, run the Python scripts in data/src/ to generate charts:
-```
+After the database is set up, run the Python scripts in `data/src/` to generate charts:
+```bash
 python data/src/phase2_monthly_revenue.py
 python data/src/phase2_refunds_active_customers.py
 ```
