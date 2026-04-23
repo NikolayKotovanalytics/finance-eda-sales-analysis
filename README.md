@@ -83,7 +83,7 @@ MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 An interactive Power BI dashboard was developed to present key financial metrics, revenue trends, refund behavior, and customer activity insights.
 
 ### Preview
-![Dashboard Preview](data/dashboards/screenshots/ftb_Revenue and Returns_dashboard.png)
+![Dashboard Preview](data/dashboards/screenshots/ftb_Revenue_and_Returns_dashboard.png)
 
 ### Interactive File
 The Power BI `.pbix` file is available here: [Download dashboard](https://drive.google.com/file/d/1wL0z1XCwDGNyfbKGTKyleXwxc9j4jrvc/view?usp=drive_link)
