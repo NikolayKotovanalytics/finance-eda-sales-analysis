@@ -12,16 +12,20 @@ Using MySQL, Python, and Power BI, I cleaned and explored the data, built time-b
 - How do refunds relate to active customer trends?
 - Are there suspicious transactions, such as payments after card expiration?
 
-## Key Findings
-- Revenue shows clear monthly variation and recurring seasonal patterns
-- A relatively small share of customers generates a disproportionate share of revenue
-- Refund spikes appear in specific periods and may require operational review
-- Some transactions occur after card expiration, suggesting possible control or data-quality issues
+## Key Insights
+
+| Analysis Area | Key Insight | Business Relevance |
+|---|---|---|
+| Revenue Trends | Revenue shows clear monthly variation and recurring seasonal patterns | Supports planning, forecasting, and campaign timing |
+| Customer Revenue | A relatively small share of customers generates a disproportionate share of total revenue | Highlights concentration risk and the importance of retaining high-value customers |
+| Refund Activity | Refund spikes occur in specific periods rather than evenly over time | Suggests periods that may require operational or policy review |
+| Customer Behavior | Purchase frequency and order-volume patterns differ meaningfully across customer segments | Supports segmentation, retention, and upsell strategy design |
+| Payment Anomalies | Some transactions occur after card expiration and other anomaly checks reveal cases for further review | May indicate control weaknesses, data-quality issues, or suspicious behavior |
 
 ## Tools Used
 MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 
-### Project Deliverables
+## Project Deliverables
 - SQL analysis scripts
 - Python visualization scripts and exported charts
 - Dashboard screenshots / Power BI reporting
@@ -29,7 +33,7 @@ MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 ## Methodology
 
 ### Phase 1 — Data Understanding and Preparation
-**Goal:** Understand the dataset structure and prepare the data for analysis in MySQL  
+**Goal:** Understand the dataset structure and prepare the data for analysis in MySQL.  
 **Tasks completed:**
 - validated table structure and column definitions
 - reviewed key fields and relationships
@@ -41,7 +45,7 @@ MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 - cleaned and standardized the data for further analysis
 
 ### Phase 2 — Time-Based Analysis
-**Goal:** Analyze how revenue and refunds change over time, including trend, seasonality, volatility, and customer activity patterns
+**Goal:** Analyze how revenue and refunds change over time, including trend, seasonality, volatility, and customer activity patterns.  
 **Techniques used:**
 - aggregations and conditional aggregations
 - date transformations and time-based grouping
@@ -51,7 +55,7 @@ MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 - customer activity metrics, including revenue per active client and card
 
 ### Phase 3 — Customer Behavior and Revenue Structure
-**Goal:** Understand how revenue is distributed across customers and how customer purchase behavior differs across segments  
+**Goal:** Understand how revenue is distributed across customers and how customer purchase behavior differs across segments.  
 **Techniques used:**
 - customer ranking and revenue concentration analysis
 - contribution analysis for top customers
@@ -61,7 +65,7 @@ MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 - refund ratio analysis at the customer level
 
 ### Phase 4 — Fraud / Anomaly Analysis
-**Goal:** Identify suspicious patterns, data integrity issues, and unusual card or customer behavior that may require further investigation  
+**Goal:** Identify suspicious patterns, data integrity issues, and unusual card or customer behavior that may require further investigation.  
 **Focus areas:**
 - cards flagged on the dark web
 - duplicate card numbers and possible card-sharing patterns
@@ -70,25 +74,20 @@ MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 - transactions after card expiration dates
 - unusual client reactivation after long inactivity periods
 
-## Key Insights
-
-| Analysis Area | Finding | Business Implication |
-|---|---|---|
-| Revenue Trends | Revenue shows visible seasonality over time | Useful for planning, forecasting, and staffing |
-| Customer Revenue | Revenue is concentrated among top customers | Indicates retention risk if key customers are lost |
-| Refund Activity | Refund spikes occur in specific periods | Worth investigating for operational or policy issues |
-| Payment Anomalies | Some transactions occur after card expiration | May indicate data-quality or control weaknesses |
-
 ## Dashboard & Data Visualization
 An interactive Power BI dashboard was developed to present key financial metrics, revenue trends, refund behavior, and customer activity insights.
 
-### Preview
+### Dashboard Preview
 ![Dashboard Preview](data/dashboards/screenshots/ftb_Revenue_and_Returns_dashboard.png)
 
 ### Interactive File
 The Power BI `.pbix` file is available here: [Download dashboard](https://drive.google.com/file/d/1wL0z1XCwDGNyfbKGTKyleXwxc9j4jrvc/view?usp=drive_link)
 
 *To explore the dashboard, download and open it in Power BI Desktop.*
+
+### Data Visualization Preview
+
+![Monthly Revenue Trend Preview](data/images/monthly_revenue_trend.png)
 
 ## How to Run This Project
 
@@ -120,13 +119,16 @@ pip install -r requirements.txt
 
 ### 4. Download the dataset
 
-This project uses the public Transactions Fraud Dataset from Kaggle.
+This project uses the public Transactions Fraud Dataset.
 
 Download it from Kaggle at: [Transactions Fraud Dataset](https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets)
 
 Raw data is not included in this repository due to size and licensing constraints.
 
+See `/data/dataset_description.md` for full dataset schema and details.
+
 ### 5. Create the MySQL database and import the dataset tables
+
 ```sql
 CREATE DATABASE financial_transactions_dataset;
 ```
@@ -155,43 +157,17 @@ Recommended order:
 4. `phase_4_fraud_and_anomaly_analysis.sql`
  
 After the database is set up, run the Python scripts in `data/src/` to generate charts:
-```bash
+```
 python data/src/phase2_monthly_revenue.py
 python data/src/phase2_refunds_active_customers.py
 ```
 - Visualizations: `data/images/` 
-
-## Repository Structure
-```text
-finance-eda-sales-analysis/
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── data/
-│   ├── sql/
-│   ├── src/
-│   ├── images/
-│   └── dashboards/
-```
 
 ### Folder Details
 - `data/sql/` - SQL scripts used for transformations and analysis
 - `data/src/` - Python scripts for database extraction and plotting
 - `data/images/` - Exported charts used in the README and reporting
 - `data/dashboards/` - Power BI dashboard screenshots or files
-
-## Dataset Overview
-The project uses a large transaction-level dataset containing approximately 13 million transaction records and supports time-based, customer-level, and payment-related analysis.
-
-Main entities analyzed include:
-- Transactions
-- Customers
-- Revenue amounts
-- Refund events
-- Card/payment attributes
-- Time dimensions
-
-See `/data/dataset_description.md` for full schema and details.
 
 ## Business Recommendations
 - Monitor revenue seasonality to improve planning and campaign timing
@@ -206,3 +182,16 @@ See `/data/dataset_description.md` for full schema and details.
 
 ## Acknowledgements / AI Assistance
 AI tools such as ChatGPT (OpenAI) were used for code review, debugging, and documentation refinement. All analysis design, interpretation of results, and final implementation decisions were performed by the author.
+
+## Repository Structure
+```text
+finance-eda-sales-analysis/
+├── README.md
+├── requirements.txt
+├── .gitignore
+├── data/
+│   ├── sql/
+│   ├── src/
+│   ├── images/
+│   └── dashboards/
+```
