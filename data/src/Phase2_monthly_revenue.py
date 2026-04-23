@@ -6,65 +6,88 @@ from db import get_db_engine
 
 engine = get_db_engine()
 
-# SQL Query to calculate monthly revenue
-query = """
-WITH clean_data AS -- CTE: Prepare data for further manipulations
-      (SELECT
-       DATE_FORMAT(date, '%%Y-%%m-01') as transaction_month,      -- changes date to year-month-01 for subsequent grouping by month 
-       CAST(REPLACE(amount, '$', '') AS DECIMAL(10,2)) AS amount_cleaned -- removes dollar sign and formats to decimal for subsequent calc
-      FROM transactions_data
-      )
-SELECT  -- Main Query: calculates revenue per month
-  transaction_month,
-  SUM(amount_cleaned) as monthly_revenue -- final revenue per month calculation
-FROM clean_data
+
+"""
+Phase 2 - Monthly Revenue Trend
+
+Purpose:
+Visualize monthly net revenue to explore revenue trend variations with time and compare it it's average yearly trend.
+
+Outputs:
+- Line chart saved to data/images/monthly_revenue_trend.png
+"""
+
+
+# Part 1. SQL Query to calculate monthly net revenue for SQLAlchemy connection and subsequent plotting with Matplotlib and Seaborn
+#---------------------------------------------------------------------------------------------------------
+
+# SQL Query to calculate monthly net revenue
+monthly_net_revenue_query = """
+-- Query: calculates net revenue per month
+SELECT  
+    transaction_month,
+    SUM(amount_cleaned) as monthly_net_revenue
+FROM clean_transactions
 GROUP BY transaction_month
 ORDER BY transaction_month;
 """
-# Note: Always add % to "%X" from MySQL, because it conflicts with Python reading
-
-df = pd.read_sql(query, engine) # Result
+#---------------------------------------------------------------------------------------------------------
 
 
-# Data manipulation for plotting data
-df["transaction_month"] = pd.to_datetime(df["transaction_month"]) # Convert Date Column 
-#MySQL → Pandas sometimes loads dates as text.
+# Part 2. Connect Pandas with SQLAlchemy queries 
+#---------------------------------------------------------------------------------------------------------
 
-df["year"] = df["transaction_month"].dt.year # Extract year for grouping and plotting. Note: always after to_datetime conversion!
+# connect refunds query
+df = pd.read_sql(monthly_net_revenue_query, engine)
+df["transaction_month"] = pd.to_datetime(df["transaction_month"]) # Convert to Date Format, as MySQL → Pandas sometimes loads dates as text
+df["year"] = df["transaction_month"].dt.year # Extract year for grouping and plotting
 df = df.sort_values("transaction_month") # Sorting by date, to ensure correct order in the plot
 
 
-# Used Pandas GROUP BY to calculate average monthly revenue per year, which will be used for the line plot of average monthly revenue per year. Then merged it back to the original df to have both monthly_revenue and avg_monthly_revenue in the same df for plotting.
+# Use Pandas GROUP BY to calculate average monthly net revenue per year, which will be used for the line plot of average monthly revenue per year
 yearly_avg_df = (                   
-    df.groupby("year", as_index=False)["monthly_revenue"]
-    .mean() # AVG
-    .rename(columns={"monthly_revenue": "avg_monthly_revenue"})
+    df.groupby("year", as_index=False)["monthly_net_revenue"]
+    .mean() # same function as MySQL "AVG"
+    .rename(columns={"monthly_net_revenue": "avg_monthly_net_revenue_within_year"})
 )
-df = df.merge(yearly_avg_df, on="year", how="left") # Merge with original df to get avg_monthly_revenue column
+
+# Merge with original df to have net revenue and average net revenue in the same dataframe for plotting
+df = df.merge(yearly_avg_df, on="year", how="left")
+
+#---------------------------------------------------------------------------------------------------------
 
 
-# Plotting the data with Matplotlib and Seaborn
-plt.figure(figsize=(10,6))
+# Part 3. Plotting the data with Matplotlib and Seaborn
+#---------------------------------------------------------------------------------------------------------
+sns.set_theme(style="whitegrid")
+
+# Plotting the data
+fig, ax = plt.subplots(figsize=(11, 6))
+
 
 sns.lineplot(
     data=df,
     x="transaction_month",
-    y="monthly_revenue",
-    label = "Monthly Revenue"
+    y="monthly_net_revenue",
+    ax=ax,
+    label = "Monthly Net Revenue"
 )   # Set data and axes for line plot
+
 sns.lineplot(
     data=df,
     x="transaction_month",
-    y="avg_monthly_revenue",
-    label="Average Monthly Revenue per year"
+    y="avg_monthly_net_revenue_within_year",
+    ax=ax,
+    label="Average Monthly Net Revenue Within Year"
 )
-# Adding labels and title to the plot
-plt.title("Monthly Revenue Trend")
-plt.xlabel("Months")
-plt.ylabel("Revenue, mln $USD")
-plt.xticks(rotation=45)
+
+ax.set_title("Monthly Net Revenue Over Time")
+ax.set_xlabel("Month")
+ax.set_ylabel("Net Revenue ($)")
+ax.tick_params(axis="x", rotation=45)
 
 plt.tight_layout()
+
 plt.show()
 
 # Saving the plot as .png image
