@@ -23,7 +23,13 @@ Using MySQL, Python, and Power BI, I cleaned and explored the data, built time-b
 | Payment Anomalies | Some transactions occur after card expiration and other anomaly checks reveal cases for further review | May indicate control weaknesses, data-quality issues, or suspicious behavior |
 
 ## Tools Used
-MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
+- MySQL
+- Python
+- pandas
+- matplotlib
+- seaborn
+- SQLAlchemy
+- Power BI
 
 ## Project Deliverables
 - SQL analysis scripts
@@ -78,6 +84,9 @@ MySQL, Python, pandas, matplotlib, seaborn, SQLAlchemy, Power BI
 An interactive Power BI dashboard was developed to present key financial metrics, revenue trends, refund behavior, and customer activity insights.
 
 ### Dashboard Preview
+
+This visualization highlights the monthly revenue trend and makes recurring seasonal variation easier to interpret.
+
 ![Dashboard Preview](data/dashboards/screenshots/ftb_Revenue_and_Returns_dashboard.png)
 
 ### Interactive File
@@ -86,6 +95,8 @@ The Power BI `.pbix` file is available here: [Download dashboard](https://drive.
 *To explore the dashboard, download and open it in Power BI Desktop.*
 
 ### Data Visualization Preview
+
+This visualization highlights the monthly revenue trend and makes recurring seasonal variation easier to interpret.
 
 ![Monthly Revenue Trend Preview](data/images/monthly_revenue_trend.png)
 
@@ -106,11 +117,12 @@ python -m venv venv
 venv\Scripts\activate
 ```
 
-**MacOS/Linux**
+**macOS / Linux**
 ```bash
 python -m venv venv
 source venv/bin/activate
 ```
+
 ### 3. Install project dependencies
 
 ```bash
@@ -119,7 +131,7 @@ pip install -r requirements.txt
 
 ### 4. Download the dataset
 
-This project uses the public Transactions Fraud Dataset.
+This project uses the public **Transactions Fraud Dataset** from Kaggle..
 
 Download it from Kaggle at: [Transactions Fraud Dataset](https://www.kaggle.com/datasets/computingvictor/transactions-fraud-datasets)
 
@@ -157,17 +169,12 @@ Recommended order:
 4. `phase_4_fraud_and_anomaly_analysis.sql`
  
 After the database is set up, run the Python scripts in `data/src/` to generate charts:
-```
+
+```bash
 python data/src/phase2_monthly_revenue.py
 python data/src/phase2_refunds_active_customers.py
 ```
 - Visualizations: `data/images/` 
-
-### Folder Details
-- `data/sql/` - SQL scripts used for transformations and analysis
-- `data/src/` - Python scripts for database extraction and plotting
-- `data/images/` - Exported charts used in the README and reporting
-- `data/dashboards/` - Power BI dashboard screenshots or files
 
 ## Business Recommendations
 - Monitor revenue seasonality to improve planning and campaign timing
@@ -179,9 +186,6 @@ python data/src/phase2_refunds_active_customers.py
 - The analysis is based on the available synthetic dataset and may not reflect missing external business context
 - Suspicious transaction patterns are indicators, not proof of fraud
 - Some findings may require product, region, or channel-level breakdown for deeper interpretation
-
-## Acknowledgements / AI Assistance
-AI tools such as ChatGPT (OpenAI) were used for code review, debugging, and documentation refinement. All analysis design, interpretation of results, and final implementation decisions were performed by the author.
 
 ## Repository Structure
 ```text
@@ -195,3 +199,12 @@ finance-eda-sales-analysis/
 │   ├── images/
 │   └── dashboards/
 ```
+
+### Folder Details
+- `data/sql/` - SQL scripts used for transformations and analysis
+- `data/src/` - Python scripts for database extraction and plotting
+- `data/images/` - Exported charts used in the README and reporting
+- `data/dashboards/` - Power BI dashboard screenshots or files
+
+## Acknowledgements / AI Assistance
+AI tools such as ChatGPT (OpenAI) were used for code review, debugging, and documentation refinement. All analysis design, interpretation of results, and final implementation decisions were performed by the author.
