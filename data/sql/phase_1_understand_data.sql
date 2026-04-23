@@ -209,12 +209,12 @@ FROM financial_transactions_dataset.clean_transactions;
 -- Summary
 -- ============================================================================
 -- Phase 1 focuses on:
--- - validating column structure
--- - reviewing key fields
--- - checking nulls and data consistency
--- - collecting general info in the dataset, i.e.:
---  - total clients, cards, transactions,
---  - total time period covered by the dataset,
---  - total revenue, refunds, net revenue.
--- data cleaning and perparing for further analysis
+-- - Validating column structure
+-- - Reviewing key fields
+-- - Checking nulls and data consistency
+-- - Collecting general info in the dataset, i.e.:
+--  - Total clients, cards, transactions,
+--  - Total time period covered by the dataset,
+--  - Total revenue, refunds, net revenue.
+-- - Data cleaning and perparing for further analysis
 

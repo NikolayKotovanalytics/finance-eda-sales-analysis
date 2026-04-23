@@ -1,7 +1,7 @@
 /*
 -- ============================================================================
 SQL EDA Phase 3: Customer Behavior & Revenue Structure 
-Purpose: Analyze customer revenue concentration, purchase behavior, and refund patterns
+Purpose: Understand how revenue is distributed across customers and how customer purchase behavior differs across segments
 to understand which customers drive revenue and how customer activity differs across segments.
 
 -- Contents:
@@ -322,7 +322,7 @@ ORDER BY total_gross_revenue DESC, refund_ratio DESC; -- Prioritizes higher spen
 -- Summary
 -- ============================================================================
 -- Phase 3 analyzes how revenue is distributed across customers and how client
--- behavior differs across segments. The section covers:
+-- behavior differs across segments. It focuses on:
 -- - Most valuable clients revenue-wise
 -- - How concentrated revenue top clients generated
 -- - Clients purchase frequency and how long they stay active
