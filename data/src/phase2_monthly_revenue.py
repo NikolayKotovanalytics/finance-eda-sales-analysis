@@ -91,4 +91,4 @@ plt.tight_layout()
 plt.show()
 
 # Saving the plot as .png image
-#plt.savefig("C:/.../monthly_revenue_trend.png") Note: an example of saving the plot as .png image
+plt.savefig("C:/.../monthly_revenue_trend.png") #Note: an example of saving the plot as .png image

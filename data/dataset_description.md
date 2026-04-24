@@ -33,24 +33,49 @@ The dataset simulates real-world financial transaction behavior and fraud patter
 ## Table Schema
 
 ### users_data
-- user_id
-- age
-- country
-- signup_date
+- id
+- current_age
+- retirement_age
+- birth_year
+- birth_month
+- gender
+- address
+- latitude
+- longitude
+- per_capita_income
+- yearly_income
+- total_debt
+- credit_score
+_num_credit_cards
 
 ### transactions_data
-- transaction_id
-- user_id
+- id
+- date
+- client_id
 - card_id
-- transaction_date
 - amount
-- merchant_category
-- is_fraud
+- use_chip
+- merchant_id
+- merchant_city
+- merchant_state
+- zip
+- mcc
+- errors
 
 ### cards_data
-- card_id
+- id
+- client_id
+- card_brand
 - card_type
-- issue_date
+- card_numbr
+- expires
+- cvv
+- has_chip
+- num_cards_issued
+- credit_limit
+- acct_open_date
+- year_pin_last_changed
+- card_on_dark_web
 
 ## Purpose in This Project
 The dataset is used to:

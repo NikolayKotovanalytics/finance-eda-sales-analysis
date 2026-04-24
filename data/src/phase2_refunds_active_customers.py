@@ -152,4 +152,4 @@ ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc="lower right")
 plt.show()
 
 # Save result as .png figure
-# fig.savefig("C:/.../monthly_refunds_active_customers_trend.png") example of saving the plot as .png image
+fig.savefig("C:/.../monthly_refunds_active_customers.png") #Note: an example of saving the plot as .png image

@@ -1,6 +1,6 @@
 /*
 -- ============================================================================
-SQL EDA Phase 4: Fraud and Anomaly Analysis 
+SQL EDA Phase 4: Payment Risk and Anomaly Analysiss 
 Purpose: Identify suspicious patterns, data integrity issues, and unusual card or customer behavior that may require further investigation
 
 -- Contents:
