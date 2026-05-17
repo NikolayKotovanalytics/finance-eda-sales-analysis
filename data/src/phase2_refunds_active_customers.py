@@ -1,8 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pathlib import Path
 
 from db import get_db_engine
+
+# Output folder
+IMAGE_DIR = Path("data/images")
+IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 engine = get_db_engine()
 
@@ -148,8 +153,9 @@ lines_1, labels_1 = ax1.get_legend_handles_labels()
 lines_2, labels_2 = ax2.get_legend_handles_labels()
 ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc="lower right")
 
-# Show the plot
-plt.show()
+output_path = IMAGE_DIR / "monthly_refunds_active_customers.png"
+plt.savefig(output_path, dpi=300, bbox_inches="tight")
 
-# Save result as .png figure
-fig.savefig("C:/.../monthly_refunds_active_customers.png") #Note: an example of saving the plot as .png image
+print(f"Plot saved to: {output_path}")
+
+plt.show()

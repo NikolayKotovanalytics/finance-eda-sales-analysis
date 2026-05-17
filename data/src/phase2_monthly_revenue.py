@@ -1,11 +1,15 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pathlib import Path
 
 from db import get_db_engine
 
-engine = get_db_engine()
+# Output folder
+IMAGE_DIR = Path("data/images")
+IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
+engine = get_db_engine()
 
 """
 Phase 2 - Monthly Revenue Trend
@@ -88,7 +92,9 @@ ax.tick_params(axis="x", rotation=45)
 
 plt.tight_layout()
 
-plt.show()
+output_path = IMAGE_DIR / "monthly_revenue_trend.png"
+plt.savefig(output_path, dpi=300, bbox_inches="tight")
 
-# Saving the plot as .png image
-plt.savefig("C:/.../monthly_revenue_trend.png") #Note: an example of saving the plot as .png image
+print(f"Plot saved to: {output_path}")
+
+plt.show()
