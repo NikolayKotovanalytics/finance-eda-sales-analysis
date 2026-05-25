@@ -11,6 +11,7 @@ IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 engine = get_db_engine()
 
+
 """
 Phase 2 - Monthly Revenue Trend
 
@@ -19,9 +20,10 @@ Visualize monthly net revenue to explore revenue trend variations with time and 
 
 Outputs:
 - Line chart saved to data/images/monthly_revenue_trend.png
+
 """
 
-
+#---------------------------------------------------------------------------------------------------------
 # Part 1. SQL Query to calculate monthly net revenue for SQLAlchemy connection and subsequent plotting with Matplotlib and Seaborn
 #---------------------------------------------------------------------------------------------------------
 
@@ -35,9 +37,9 @@ FROM clean_transactions
 GROUP BY transaction_month
 ORDER BY transaction_month;
 """
+
+
 #---------------------------------------------------------------------------------------------------------
-
-
 # Part 2. Connect Pandas with SQLAlchemy queries 
 #---------------------------------------------------------------------------------------------------------
 
@@ -58,40 +60,48 @@ yearly_avg_df = (
 # Merge with original df to have net revenue and average net revenue in the same dataframe for plotting
 df = df.merge(yearly_avg_df, on="year", how="left")
 
+# Improve readability of the plot by dividing by 1 million because net revenue is in millions of USD
+df["monthly_net_revenue_millions"] = df["monthly_net_revenue"] / 1000000
+df["avg_monthly_net_revenue_within_year_millions"] = (
+    df["avg_monthly_net_revenue_within_year"] / 1000000
+)
+
+
+
 #---------------------------------------------------------------------------------------------------------
-
-
 # Part 3. Plotting the data with Matplotlib and Seaborn
 #---------------------------------------------------------------------------------------------------------
+
 sns.set_theme(style="whitegrid")
 
 # Plotting the data
 fig, ax = plt.subplots(figsize=(11, 6))
 
-
+# Set data and axes for line plot for month 
 sns.lineplot(
     data=df,
     x="transaction_month",
-    y="monthly_net_revenue",
+    y="monthly_net_revenue_millions",
     ax=ax,
     label = "Monthly Net Revenue"
-)   # Set data and axes for line plot
+)   
 
 sns.lineplot(
     data=df,
     x="transaction_month",
-    y="avg_monthly_net_revenue_within_year",
+    y="avg_monthly_net_revenue_within_year_millions",
     ax=ax,
     label="Average Monthly Net Revenue Within Year"
 )
 
 ax.set_title("Monthly Net Revenue Over Time")
-ax.set_xlabel("Month")
-ax.set_ylabel("Net Revenue ($)")
+ax.set_xlabel("Year-Month")
+ax.set_ylabel("Net Revenue ($ Millions)")
 ax.tick_params(axis="x", rotation=45)
 
 plt.tight_layout()
 
+#Save the plot to the output folder
 output_path = IMAGE_DIR / "monthly_revenue_trend.png"
 plt.savefig(output_path, dpi=300, bbox_inches="tight")
 

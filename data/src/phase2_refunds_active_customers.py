@@ -84,9 +84,9 @@ FROM clean_transactions
 GROUP BY transaction_month
 ORDER BY transaction_month;
 """
+
+
 #---------------------------------------------------------------------------------------------------------
-
-
 # Part 2. Connect Pandas with SQLAlchemy queries 
 #---------------------------------------------------------------------------------------------------------
 
@@ -102,9 +102,12 @@ df_ac = df_ac.sort_values("transaction_month") # Sorting by date, to ensure corr
 
 # Merge pandas dataframe to have refunds and active customers in the same dataframe for plotting 
 df_plot = df_refunds.merge(df_ac, on="transaction_month", how="left") 
+
+# Improve readability of the plot by dividing by 1000 because refunds are in hundreds thousands of USD
+df_plot["monthly_refunds_thousands"] = df_plot["monthly_refunds"] / 1000
+
+
 #---------------------------------------------------------------------------------------------------------
-
-
 # Part 3. Plotting the data with Matplotlib and Seaborn
 #---------------------------------------------------------------------------------------------------------
 sns.set_theme(style="whitegrid")
@@ -116,14 +119,14 @@ fig, ax1 = plt.subplots(figsize=(11, 6))
 sns.lineplot(
     data=df_plot,
     x="transaction_month",
-    y="monthly_refunds",
+    y="monthly_refunds_thousands",
     ax=ax1,
     color="tab:blue",
     label="Monthly Refunds"
 )
 
-ax1.set_xlabel("Month")
-ax1.set_ylabel("Monthly Refund Amount ($)")
+ax1.set_xlabel("Year-Month")
+ax1.set_ylabel("Monthly Refund Amount ($ Thousands)")
 ax1.tick_params(axis="y")
 
 
@@ -146,14 +149,28 @@ ax2.tick_params(axis="y")
 #  Title & formatting 
 plt.title("Monthly Refunds vs Active Customers")
 plt.xticks(rotation=45)
-plt.tight_layout()
 
-# Legend (combine both axes) 
+# Remove automatic legends created by seaborn
+if ax1.get_legend() is not None:
+    ax1.get_legend().remove()
+
+if ax2.get_legend() is not None:
+    ax2.get_legend().remove()
+
+# Create one combined legend
 lines_1, labels_1 = ax1.get_legend_handles_labels()
 lines_2, labels_2 = ax2.get_legend_handles_labels()
-ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc="lower right")
 
-output_path = IMAGE_DIR / "monthly_refunds_active_customers.png"
+ax1.legend(
+    lines_1 + lines_2,
+    labels_1 + labels_2,
+    loc="lower right"
+)
+
+plt.tight_layout()
+
+#Save the plot to the output folder
+output_path = IMAGE_DIR / "monthly_refunds_vs_active_customers.png"
 plt.savefig(output_path, dpi=300, bbox_inches="tight")
 
 print(f"Plot saved to: {output_path}")
