@@ -121,10 +121,14 @@ An interactive Power BI dashboard was developed to present key financial metrics
 
 This dashboard summarizes revenue, refunds, customer activity, and key financial trends for business users.
 
-![Dashboard Preview](data/dashboards/screenshots/ftb_Revenue_and_Returns_dashboard.png)
+![Dashboard Preview](data/dashboards/screenshots/ftb_Revenue and Refunds_dashboard.png)
+
+The same dashboard showing changes when only Swipe transactions were selected. Note: Introducing contactless payments became significantly more popular since 2014.
+
+![Dashboard Preview](data/dashboards/screenshots/ftb_Revenue and Refunds_dashboard_Swipe_transactions_filter.png)
 
 ### Interactive File
-The Power BI `.pbix` file is available here: [Download dashboard](https://drive.google.com/file/d/1wL0z1XCwDGNyfbKGTKyleXwxc9j4jrvc/view?usp=drive_link)
+The Power BI `.pbix` file is available here: [Download dashboard](https://drive.google.com/file/d/13Y9dMno-slzWZmO0NdS4wKluUBi3tLQU/view?usp=sharing)
 
 *To explore the dashboard, download and open it in Power BI Desktop.*
 
