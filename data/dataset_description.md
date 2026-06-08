@@ -23,10 +23,16 @@ The raw data is not included in this repository.
 This dataset contains financial transaction records including:
 - Transaction timestamps
 - Transaction amounts
+- Transaction types
 - User identifiers
+- User demographic information 
+- User account-related details
 - Card identifiers
+- Card limits
+- Card types
+- Card activation dates
 - Merchant categories
-- Fraud labels
+
 
 The dataset simulates real-world financial transaction behavior and fraud patterns.
 

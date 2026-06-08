@@ -1,9 +1,9 @@
-# Finance EDA Sales Analysis
+# Financial Transactions EDA: Revenue, Refunds, Customer Segmentation & Payment Anomaly Analysis
 
 ## Project Summary
 This project analyzes approximately 13 million financial transactions to examine revenue seasonality, customer revenue concentration, refund behavior, and fraud-related anomalies.
 
-Using MySQL, Python, and Power BI, I cleaned and explored the data, built time-based and customer-level analyses, and identified patterns with practical implications for retention, operational monitoring, and payment control review.
+Using MySQL, Python, and Power BI, I cleaned and explored the data, built time-based and customer-level analyses, and identified patterns with practical implications for retention, operational monitoring, and payment-control review.
 
 ## Business Questions
 - How does revenue change over time?
@@ -18,7 +18,7 @@ Using MySQL, Python, and Power BI, I cleaned and explored the data, built time-b
 
 - Dataset period: 2010-01-01 to 2019-10-31.
 - Total transactions: 13M+.
-- Total clients: 2,000; active clients: 1,219; inactive clients: 781.
+- Total clients: 2,000; Among whom: active clients - 1,219 and inactive clients - 781.
 - Total gross revenue: ~$639M.
 - Total refunds: ~$67.5M.
 - Total net revenue: ~$571M.
@@ -52,9 +52,9 @@ Overall, the project demonstrates how SQL, Python, and Power BI can turn raw fin
 - Review payment validation rules for transactions involving expired cards.
 
 ## Limitations
-- The analysis is based on the available synthetic dataset and may not reflect missing external business context
-- Suspicious transaction patterns are indicators, not proof of fraud
-- Some findings may require product, region, or channel-level breakdown for deeper interpretation
+- The analysis is based on the available synthetic dataset and may not reflect missing external business context.
+- Suspicious transaction patterns are indicators, not proof of fraud.
+- Some findings may require product, region, or channel-level breakdown for deeper interpretation.
 
 ## Tools Used
 - MySQL
@@ -77,7 +77,7 @@ Overall, the project demonstrates how SQL, Python, and Power BI can turn raw fin
 **Tasks completed:**
 - validated table structure and column definitions
 - reviewed key fields and relationships
-- checked nulls and general data consistency
+- checked for nulls and general data consistency
 - collected overall dataset statistics, including:
   - total clients, cards, and transactions
   - total time period covered by the dataset
