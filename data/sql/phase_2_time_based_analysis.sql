@@ -50,7 +50,7 @@ SELECT
 transaction_month,
 SUM(amount_cleaned) as monthly_net_revenue,
 LAG(SUM(amount_cleaned)) OVER (
-    ORDER BY transaction_month -- ensures correct order of months for LAG function to work properly
+    ORDER BY transaction_month      -- ensures correct order of months for LAG function to work properly
     ) as previous_month_net_revenue -- returns the value of a previous month revenue for each month
 FROM clean_transactions
 GROUP BY transaction_month)
@@ -73,6 +73,7 @@ ORDER BY transaction_month;
 -- Insight: Shows month-over-month changes in net revenue in both absolute
 -- and percentage terms, which helps highlight acceleration, slowdown,
 -- and unusual month-level shifts.
+
 
 -- ============================================================================
 -- Task 3 Rolling 3-Month Revenue to smooth short-term volatility
@@ -98,7 +99,7 @@ ORDER BY transaction_month;
 
 -- ============================================================================
 -- Task 4 Yearly revenue and refunds
--- Goal: Get a look at a coarsier revenue time trend using 1 year revenue as a step
+-- Goal: Get a look at a coarsier revenue time trend using 1 year revenue as a step.
 -- ============================================================================
 
 -- Query: calculates yearly revenue and refunds
@@ -106,13 +107,14 @@ SELECT
     YEAR(transaction_date) as dataset_year, -- shortens data to year
     SUM(amount_cleaned) as yearly_net_revenue,  -- revenue calculation,
     SUM(CASE WHEN amount_cleaned >= 0 THEN amount_cleaned ELSE 0 END) as yearly_gross_revenue, -- revenue without refunds
-    SUM(CASE WHEN amount_cleaned < 0 THEN amount_cleaned ELSE 0 END) * -1 as refunds_per_year -- only refunds calculation
+    SUM(CASE WHEN amount_cleaned < 0 THEN amount_cleaned ELSE 0 END) * -1 as refunds_per_year  -- only refunds calculation
 FROM clean_transactions
 GROUP BY dataset_year                     -- groups by year for final calculation
 ORDER BY dataset_year;
 
 -- Insight: This view compares yearly gross revenue, net revenue, and refunds,
 -- making it easier to evaluate long-term performance without monthly fluctuations.
+
 
 -- ============================================================================
 -- Task 5 Seasonality Analysis (Monthly Pattern)
@@ -127,13 +129,13 @@ SELECT
 FROM clean_transactions
 GROUP BY transaction_month)
 
--- Main Query: final calculation of avg per month from 2010 till 2019 and rank of months by their avg revenue
+-- Main Query: final calculation of avg per month from 2010 till 2019 and rank of months by their average revenue
 SELECT    
-    MONTHNAME(transaction_month) as 'Month', -- returns name of month needed for seasonality analysis
+    MONTHNAME(transaction_month) as 'Month',           -- returns name of month needed for seasonality analysis
     AVG(monthly_net_revenue) as avg_month_net_revenue, -- returns average revenue per month across all years in the dataset
     RANK() OVER (
         ORDER BY AVG(monthly_net_revenue) DESC
-        ) as month_net_revenue_rank -- ranking months starting with largest average monthly revenue
+        ) as month_net_revenue_rank                    -- ranking months starting with largest average monthly revenue
 FROM monthly_rev
 GROUP BY MONTHNAME(transaction_month)
 ORDER BY month_net_revenue_rank;
@@ -158,7 +160,7 @@ FROM clean_transactions
 WHERE amount_cleaned > 0 -- ignore refunds as we want to see the relationship between transaction volume and revenue
 GROUP BY transaction_month)
 
--- Main Query: calculation of avg transaction value per month
+-- Main Query: calculation of average transaction value per month
 SELECT 
     YEAR(transaction_month) AS 'Year',
     MONTHNAME(transaction_month) AS 'Month',
@@ -172,9 +174,10 @@ ORDER BY transaction_month;
 -- transaction value helps show whether revenue changes are driven more by
 -- transaction volume or by order value.
 
+
 -- ============================================================================
 -- TASK 7 Refund Trend Over Time
--- Goal: Understand monthly refund trends
+-- Goal: Understand monthly refund trends.
 -- ============================================================================
 
 -- CTE: Prepare data for further manipulations
@@ -185,7 +188,7 @@ SELECT
     COUNT(
         CASE
             WHEN amount_cleaned < 0 THEN 1 
-        END -- ELSE is automaticlally NULL, but if set it to 0 or any not NULL value, it will be counted by the COUNT function
+        END -- ELSE is automatically 'NULL', but if set it to '0' or any non-'NULL' value, it will be counted by the 'COUNT' function
     ) AS refund_transactions, -- counts number of refund transactions per month
     SUM(
         CASE 
@@ -209,13 +212,13 @@ SELECT
     refund_transactions AS refund_transactions_per_month,
     monthly_refunds,
     ROUND (
-        100 * monthly_refunds / monthly_gross_revenue, -- Note. monthly_refunds were converted to positive value during previous step
+        100 * monthly_refunds / monthly_gross_revenue, -- Note: monthly_refunds were converted to positive value during previous step
         2
-        ) AS refund_ratio_pct,  -- final calculation of refund value ratio percentage of total income
+        ) AS refund_ratio_pct,                         -- final calculation of refund value ratio percentage of total income
     ROUND (
         100 * refund_transactions / transactions_per_month,
         2
-        ) AS refund_transactions_ratio_pct -- final calculation of refund transactions ratio percentage of total transactions
+        ) AS refund_transactions_ratio_pct             -- final calculation of refund transactions ratio percentage of total transactions
 FROM monthly_calc)
 
 -- Main Query: date formatting for better readability of results
@@ -235,7 +238,7 @@ ORDER BY transaction_month;
 
 -- ============================================================================
 -- Task 8 Revenue Volatility by Year
--- Goal: Analyze revenue volatility by year
+-- Goal: Analyze revenue volatility by year.
 -- ============================================================================
 
 -- CTE: Prepare data for further manipulations
@@ -251,8 +254,10 @@ GROUP BY YEAR(transaction_month), MONTH(transaction_month))
 SELECT       
     transaction_year AS 'Year',
     ROUND(AVG(monthly_net_revenue), 2) AS avg_monthly_net_revenue,      -- calculates AVG monthly revenue per year
-    ROUND(STDDEV_POP(monthly_net_revenue), 2) AS net_revenue_volatility, -- revenue volatility, 
-    ROUND(100 * STDDEV_POP(monthly_net_revenue) / AVG(monthly_net_revenue), 2) AS net_revenue_volatility_coefficient
+    ROUND(STDDEV_POP(monthly_net_revenue), 2) AS net_revenue_volatility, -- returns revenue volatility 
+    -- I divide revenue volatility by average monthly revenue to get volatility coefficient
+    -- for better comparability across years with different revenue levels
+    ROUND(100 * STDDEV_POP(monthly_net_revenue) / AVG(monthly_net_revenue), 2) AS net_revenue_volatility_coefficient 
 FROM monthly_rev
 GROUP BY transaction_year
 ORDER BY transaction_year;
@@ -276,17 +281,17 @@ SELECT
                 CASE 
                     WHEN amount_cleaned > 0 THEN amount_cleaned 
                     ELSE 0 
-                END) -- ignore refunds to avoid distorting per-customer value
+                END)            -- ignore refunds to avoid distorting per-customer value
             / COUNT(DISTINCT client_id), 2
-    ) AS revenue_per_customer, -- final count of net revenue value per active customer
+    ) AS revenue_per_customer,  -- final count of net revenue value per active customer
     ROUND(
             SUM(
                 CASE 
                     WHEN amount_cleaned > 0 THEN amount_cleaned 
                     ELSE 0 
-                END) -- ignore refunds to avoid distorting per-customer value
+                END)            -- ignore refunds to avoid distorting per-customer value
             / COUNT(DISTINCT card_id), 2
-    ) AS revenue_per_card -- final count of net revenue value per each bank card
+    ) AS revenue_per_card       -- final count of net revenue value per each bank card
 FROM clean_transactions
 GROUP BY transaction_month
 ORDER BY transaction_month)
@@ -308,7 +313,7 @@ ORDER BY transaction_month;
 
 -- ============================================================================
 -- Task 10 Recency, Frequency, Monetary (RFM) analysis for Revenue with account to refunds
--- Goal: Understand customer behavior for marketing startaegies
+-- Goal: Understand customer behavior for marketing startaegies.
 -- ============================================================================
 
 -- CTE: specify a specific (snapshot) date, which is here a final transaction day + 1 day, to use in recency calculations
@@ -354,25 +359,6 @@ SELECT
 FROM last_order_date lod
 CROSS JOIN snapshot_date sd), -- CROSS JOIN combines all rows in both tables without conditions, and we have only one date in sd  
 
--- EDA analysis of rfm_table
--- SELECT
--- revenue part
---        MIN(recency_revenue_days),              -- 1
---        MAX(recency_revenue_days),              -- 2465
---        ROUND(AVG(recency_revenue_days), 1),    -- 15.1
---        MIN(monetary_client_revenue),           -- 31753.34
---        MAX(monetary_client_revenue),           -- 3002117.15
---        ROUND(AVG(monetary_client_revenue), 1), -- 524491.0
-
--- refund part
---        MIN(recency_refund_days),               -- 1
---        MAX(recency_refund_days),               -- 2475
---        ROUND(AVG(recency_refund_days), 1),     -- 31.9
---        MIN(monetary_client_refund),            -- 776.15
---        MAX(monetary_client_refund),            -- 851825.00
---        ROUND(AVG(monetary_client_refund), 1)   -- 55388.9
--- FROM rfm_table;
-
 -- CTE: create for clients 5 buckets/performance scores for each r,f,m parameters 
 clients_scored AS (
 SELECT 
@@ -394,6 +380,7 @@ FROM rfm_table),
 segmented AS (
 SELECT 
     client_id,
+
 -- revenue part
     monetary_client_revenue,
 
@@ -421,7 +408,7 @@ SELECT
             m_revenue_score >= 4
         THEN "Big spenders" 
         
-        -- Set conditions to find other specific client groups based on rfm parameters
+    -- Set conditions to find other specific client groups based on rfm parameters
         WHEN
             r_revenue_score <= 2 AND
             f_revenue_score >= 3         

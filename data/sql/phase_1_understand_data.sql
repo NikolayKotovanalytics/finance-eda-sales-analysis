@@ -1,11 +1,11 @@
 /*
 -- ============================================================================
 SQL EDA Phase 1: Data Understanding and Preparation
-Purpose: nderstand data in the dataset and Prepare it for analysis in MySQL    
+Purpose: understand data in the dataset and prepare it for analysis in MySQL.    
 
 -- Contents:
 -- Task 1. Overview data
--- Task 2. Find Missing Data (Checking NULLs)
+-- Task 2. Find Missing Data (Checking 'NULL's)
 -- Task 3. Count total Clients, Cards, Transactions in the dataset
 -- Task 4. Assess time range of the dataset
 -- Task 5. Count Total Revenue from all transactions
@@ -17,7 +17,7 @@ USE financial_transactions_dataset;
 
 -- ============================================================================
 -- Task 1 Overview data 
--- Goal: Understand datsaset structure
+-- Goal: Understand datsaset structure. Check column names, data types, and key fields in each table.
 -- ============================================================================
 
 DESCRIBE cards_data;
@@ -39,11 +39,11 @@ DESCRIBE transactions_data;
 
 
 -- ============================================================================
--- Task 2 Find Missing Data (Checking NULLs) 
--- Goal: Find missing data (NULLs)
+-- Task 2 Find Missing Data (Checking 'NULL's) 
+-- Goal: Find missing data ('NULL's).
 -- ============================================================================
 
--- Query 1 Summs NULL values in each colomn in table with cards info
+-- Query 1 Count total number of 'NULL' values in each colomn in table with cards info
 SELECT
     SUM(id IS NULL) AS id_nulls,                                          -- 0
     SUM(client_id IS NULL) AS client_id_nulls,                            -- 0
@@ -60,7 +60,7 @@ SELECT
     SUM(card_on_dark_web IS NULL) AS card_on_dark_web_nulls               -- 0
 FROM cards_data;
 
--- Query 2 Summs NULL values in each colomn in table with clients info
+-- Query 2 Count total number of 'NULL' values in each colomn in table with clients info
 SELECT
     SUM(id IS NULL) AS id_nulls,                               -- 0
     SUM(current_age IS NULL) AS current_age_nulls,             -- 0
@@ -78,7 +78,7 @@ SELECT
     SUM(num_credit_cards IS NULL) AS num_credit_cards_nulls    -- 0
 FROM users_data u;
 
--- Query 3 Summs NULL values in each colomn in table with transactions info
+-- Query 3 Count total number of 'NULL' values in each colomn in table with transactions info
 SELECT
     SUM(id IS NULL) AS id_nulls,                             -- 0
     SUM(date IS NULL) AS date_nulls,                         -- 0
@@ -94,14 +94,14 @@ SELECT
     SUM(errors IS NULL) AS errors_nulls                      -- 0
 FROM transactions_data; 
 
--- Insight: No NULL values were detected in the dataset
+-- Insight: No NULL values were detected in the dataset. Therefor, no explicitly missing data.
 
 
 -- ============================================================================
 -- Task 3 Count total Clients, Cards, Transactions in the dataset
--- Goal: Check total number of clients (active/non-active), cards, transactions
+-- Goal: Check total number of clients (active/non-active), cards, transactions.
 
--- Note. Active clients are these with one or more transactions, while non-active has no transactions mentioned in the dataset 
+-- Note. Active clients are those with one or more transactions, while non-active has no transactions mentioned in the dataset 
 -- ============================================================================
 
 -- Query 1 Check the total number of cards, unique cards, and unique clients in the dataset
@@ -138,8 +138,8 @@ WHERE t.client_id IS NULL;
 
 
 -- ============================================================================
--- Task 4 Assess time range of the dataset --
--- Goal: Find total time period wich covers the dataset 
+-- Task 4 Assess time range of the dataset
+-- Goal: Find total time period wich the dataset covers.
 -- ============================================================================
 
 SELECT 
@@ -152,15 +152,16 @@ FROM transactions_data t;
 
 
 -- ============================================================================
--- Task 5 Count Total Revenue from all transactions --
--- Goal: Find total time period wich covers the dataset 
+-- Task 5 Count Total Revenue from all transactions 
+-- Goal: Find total time period wich covers the dataset.
 
 -- Note. Revenue is in TEXT format and contains negative values (refunds),
--- thus additional task is to transform required data for further analyses in next phases of this EDA.
+-- thus additional task is to transform required data for further analyses in next phases of this EDA
 -- ============================================================================
 
+-- Note. Here, I decided to create a CTAS table with cleaned amount and date format that will be reused in further data analysis of this dataset. 
+-- This will help to avoid repeating data cleaning steps in each query and make the code more efficient and readable.
 
--- Additional task. Create CTAS table with cleaned amount and date format for further analysis
 CREATE TABLE financial_transactions_dataset.clean_transactions AS (
 SELECT         
         client_id,
@@ -179,8 +180,7 @@ FROM financial_transactions_dataset.clean_transactions
 LIMIT 5;
 -- ============================================================================
 
---Main Task:
--- Query to count toal revenue, toal refunds, and total net revenue 
+-- Main Task: Count total revenue, total refunds, and total net revenue 
 
 SELECT      
 -- total revenue

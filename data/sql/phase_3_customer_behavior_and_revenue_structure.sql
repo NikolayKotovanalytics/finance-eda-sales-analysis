@@ -25,7 +25,7 @@ USE financial_transactions_dataset;
 -- Goal: Find main revenue contributors
 -- ============================================================================
 
--- CTE calculate total gross revenue for further calculation of the client gross revenue ratio in percantages
+-- CTE calculate total gross revenue for further calculation of the client gross revenue ratio in percentages
 WITH total_rev AS (
 SELECT 
     SUM(CASE WHEN amount_cleaned > 0 THEN amount_cleaned ELSE 0 END) AS total_gross_revenue
@@ -82,11 +82,11 @@ SELECT
     CUME_DIST() OVER (ORDER BY client_net_revenue DESC) AS dist_rank -- ranking using Cume_Dist as it returns percentage of partition values less than or equal to the value in the current row
 FROM revenue)
 
--- Main Query: filtering data and calculating cumulative revenue share of TOP 10% clients based on revenue
+-- Main Query: filtering data and calculating cumulative revenue share of TOP 10% clients
 SELECT      
     MAX(total_net_revenue) AS total_net_revenue, 
     SUM(client_net_revenue) AS top10_net_revenue,                                                     -- Total revenue of TOP 10% clients
-    ROUND(100 * SUM(client_net_revenue) / MAX(total_net_revenue), 2) AS top10_net_revenue_share_pct   -- Calculating the total percantage share of TOP10% clients
+    ROUND(100 * SUM(client_net_revenue) / MAX(total_net_revenue), 2) AS top10_net_revenue_share_pct   -- Calculating the total percentage share of TOP10% clients
 FROM ranked_clients
 WHERE dist_rank <= 0.10; -- Filters top 10% customers by revenue 
 
@@ -96,10 +96,10 @@ WHERE dist_rank <= 0.10; -- Filters top 10% customers by revenue
 
 -- ============================================================================
 -- Task 3 Customer Purchase Frequency Segmentation 
--- Goal: Categorize clients by purchase frequency over their active lifetime with accoount to refunds
+-- Goal: Categorize clients by purchase frequency over their active lifetime with account to refunds
 -- ============================================================================
 
--- CTE: preliminary calcuations per client
+-- CTE: preliminary calculations per client
 WITH customer_lifetime AS (
 SELECT
     client_id,
@@ -233,12 +233,12 @@ GROUP BY clients_category;
 WITH customer_lifetime AS (
 SELECT
     client_id,
-    COUNT(*) AS total_purchases,            -- Calculates total purchases for next step - frequency calculations
+    COUNT(*) AS total_purchases,                  -- Calculates total purchases for next step - frequency calculations
     MIN(transaction_month) AS first_month,
     MAX(transaction_month) AS last_month,
     SUM(amount_cleaned) AS total_gross_revenue    -- Calculates total gross revenue for next step 
 FROM clean_transactions
-WHERE amount_cleaned > 0                    -- Exclude refunds
+WHERE amount_cleaned > 0                          -- Exclude refunds
 GROUP BY client_id),
 
 -- CTE: converts lifetime window into client's active period
@@ -272,8 +272,8 @@ FROM lifetime_frequency)
 SELECT 
     client_purchase_frequency,
     client_gross_revenue,
-    COUNT(*) AS clients_number, -- calculate number of clients in each group
-    ROUND(100 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS share_pct -- calculates share percentage of the group;
+    COUNT(*) AS clients_number,                                   -- calculate number of clients in each group
+    ROUND(100 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS share_pct -- calculates share percentage of the group
 FROM client_labels
 GROUP BY client_purchase_frequency, client_gross_revenue;
 
@@ -291,7 +291,7 @@ WITH precalculus AS (
 SELECT 
     client_id,
     SUM(CASE WHEN amount_cleaned > 0 THEN amount_cleaned ELSE 0 END) AS total_gross_revenue, -- Calculates total spending
-    -1 * SUM(CASE WHEN amount_cleaned < 0 THEN amount_cleaned ELSE 0 END) AS total_refund         -- Calculates total refunds
+    -1 * SUM(CASE WHEN amount_cleaned < 0 THEN amount_cleaned ELSE 0 END) AS total_refund    -- Calculates total refunds
 FROM clean_transactions
 GROUP BY client_id),
 
@@ -301,7 +301,7 @@ SELECT
     client_id,
     total_gross_revenue,
     total_refund,
-    100 * total_refund / NULLIF(total_gross_revenue, 0) AS refund_ratio -- Note: positive value; calculates refund ratio as percantage of total spending
+    100 * total_refund / NULLIF(total_gross_revenue, 0) AS refund_ratio -- Note: positive value; calculates refund ratio as percentage of total spending
 FROM precalculus)
 
 -- Main Query: filter clients with high refunds prioritize these with high spending

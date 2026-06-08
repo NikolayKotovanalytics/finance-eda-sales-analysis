@@ -1,6 +1,6 @@
 /*
 -- ============================================================================
-SQL EDA Phase 4: Payment Risk and Anomaly Analysiss 
+SQL EDA Phase 4: Payment Risk and Anomaly Analysis 
 Purpose: Identify suspicious patterns, data integrity issues, and unusual card or customer behavior that may require further investigation
 
 -- Contents:
@@ -46,11 +46,11 @@ GROUP BY card_on_dark_web;
 SELECT 
     COUNT(*) AS duplicated_card_numbers
 FROM (
-    SELECT -- subquery listing all duplicated cards numbers
+    SELECT              -- subquery listing all duplicated cards numbers
         card_number 
     FROM cards_data
     GROUP BY card_number
-    HAVING COUNT(*) > 1 -- filter cards that have more than 1 occurrence in the dataset
+    HAVING COUNT(*) > 1  -- filter cards that have more than 1 occurrence in the dataset
 ) sub; 
 
 -- Insight: This check validates whether any card numbers are duplicated in
@@ -58,7 +58,7 @@ FROM (
 
 
 -- ============================================================================
--- Task 3 Cards without clients and Clients without transactions
+-- Task 3 Cards without clients and clients without transactions
 -- Goal: Check if there are any cards without clients in the dataset and if there are any clients without transactions in the dataset
 -- ============================================================================
 
@@ -150,8 +150,9 @@ SELECT
     -- Note. 1 month is added to the expiration time to find the 1st day when the bank card is inactive
 FROM cards_expiration_data)
 
--- Main Query: Lists clients ids, their bank cards number,their cards deactivation date,
+-- Main Query: Lists clients ids, their bank cards numbers, their cards deactivation date,
 -- and the transactions performed with these cards after their deactivation dates
+
 SELECT
     ct.client_id,
     ct.card_id,
@@ -182,7 +183,7 @@ SELECT
     LAG(transaction_date) OVER (
         PARTITION BY client_id 
         ORDER BY transaction_date
-    ) AS previous_date, -- Get a previous transaction date for each customer to calculate dormancy
+    ) AS previous_date,    -- Get a previous transaction date for each customer to calculate dormancy
     amount_cleaned AS gross_revenue
 FROM clean_transactions
 WHERE amount_cleaned > 0), -- Exclude refunds
@@ -193,14 +194,14 @@ SELECT
     client_id,
     SUM(amount_cleaned) AS client_gross_revenue 
 FROM clean_transactions
-WHERE amount_cleaned > 0 -- Exclude refunds
+WHERE amount_cleaned > 0   -- Exclude refunds
 GROUP BY client_id),
 
 -- CTE: Calculates Dormancy revenue, i.e. revenue for clients reactivated with purchases after a set number of days - 60 days
 reactivation AS (
 SELECT
     client_id,
-    SUM(gross_revenue) AS reactivation_gross_revenue -- Sum revenue for transactions that are considered reactivations (after dormancy)
+    SUM(gross_revenue) AS reactivation_gross_revenue   -- Sum revenue for transactions that are considered reactivations (after dormancy)
 FROM date_lag
 WHERE 
     previous_date IS NOT NULL 
@@ -212,7 +213,7 @@ reactivation_share AS (
 SELECT
     r.client_id,
     r.reactivation_gross_revenue,
-    c.client_gross_revenue, -- total gross client revenue 
+    c.client_gross_revenue,       -- total gross client revenue 
     ROUND(100 * r.reactivation_gross_revenue / NULLIF(c.client_gross_revenue, 0), 2) 
         AS reactivation_share_pct -- calculate reactivantion revenue ratio per client for further filtering of the spike
 FROM reactivation r
@@ -222,7 +223,7 @@ JOIN client_total_revenue c ON r.client_id = c.client_id)
 SELECT *
 FROM reactivation_share
 WHERE 
-    reactivation_share_pct >= 1   -- spike threshold 
+    reactivation_share_pct >= 1         -- spike threshold 
     AND reactivation_gross_revenue > 0  -- remove 0
 ORDER BY reactivation_gross_revenue DESC;
 
@@ -263,7 +264,7 @@ SELECT DISTINCT
     c.client_id
 FROM cards_data c
 JOIN suspicious_cards s 
-    ON c.card_number = s.card_number -- Join with original table to find respective card-client pairs
+    ON c.card_number = s.card_number -- joins with original table to find respective card-client pairs
 JOIN suspicious_cards_2 s2
     ON c.id = s2.card_id
 ORDER BY c.card_number;
