@@ -20,7 +20,7 @@ Visualize monthly refund amounts alongside active customer counts
 to explore whether refund activity changes together with customer activity.
 
 Outputs:
-- Line chart saved to data/images/monthly_refunds_active_customers.png
+- Line chart saved to data/images/monthly_refunds_vs_active_customers.png
 """
 
 
