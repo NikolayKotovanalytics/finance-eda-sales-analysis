@@ -313,7 +313,7 @@ ORDER BY transaction_month;
 
 -- ============================================================================
 -- Task 10 Recency, Frequency, Monetary (RFM) analysis for Revenue with account to refunds
--- Goal: Understand customer behavior for marketing startaegies.
+-- Goal: Understand customer behavior for marketing strategies.
 -- ============================================================================
 
 -- CTE: specify a specific (snapshot) date, which is here a final transaction day + 1 day, to use in recency calculations
